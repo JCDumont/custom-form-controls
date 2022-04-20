@@ -1,0 +1,29 @@
+<section
+  class="form-input"
+  [class.disabled]="disabled"
+  [class.focused]="focused">
+
+  <section class="input">
+
+    <div class="input-wrapper">
+
+      <mat-slide-toggle
+          class="example-margin"
+          [formControl]="formControl"
+          (change)="writeValue($event.checked, true)"
+          [disabled]="disabled">
+
+          {{ label }}
+      </mat-slide-toggle>
+    </div>
+  </section>
+
+</section>
+
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>

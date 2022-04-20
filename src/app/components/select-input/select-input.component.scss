@@ -1,0 +1,46 @@
+ng-select {
+  width: 100%;
+
+  .ng-select-container {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 6px 0 6px 0;
+    background-color: transparent !important;
+  }
+
+  input,
+  .ng-value-label {
+    font-size: 15px;
+    line-height: 21px;;
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+}
+
+.select.input {
+  padding: 1px 0 1px;
+}
+
+
+// Multi select styles
+
+
+.ng-select-multiple {
+  .ng-select-container {
+    padding: 0 !important;
+
+    .ng-value-container {
+      padding-top: 0 !important;
+
+      .ng-value {
+        margin: 2px 4px !important;
+        margin-top: 4px;
+        background-color: rgba( 0, 185, 255 , 0.5) !important;
+
+        .ng-value-label {
+          color: #333;
+        }
+      }
+    }
+  }
+}

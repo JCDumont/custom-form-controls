@@ -1,0 +1,44 @@
+<section
+  class="form-input"
+  [class.disabled]="disabled"
+  [class.focused]="focused">
+
+  <label for="">
+    {{ label }}
+  </label>
+
+  <section class="input">
+
+    <div class="input-wrapper">
+      <input
+        #input
+        matInput
+        [matDatepicker]="picker"
+        type="text"
+        [formControl]="formControl"
+        [disabled]="disabled"
+        (dateInput)="writeValue($event.value, true)"
+        (focus)="focused = true"
+        (blur)="onTouched(); focused = false">
+
+        <button
+          (click)="picker.open()"
+          [disabled]="disabled"
+          class="date-picker-icon">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </button>
+
+    </div>
+
+    <mat-datepicker #picker></mat-datepicker>
+
+  </section>
+
+</section>
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>

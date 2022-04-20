@@ -1,0 +1,36 @@
+<section
+  class="form-input"
+  [class.disabled]="disabled"
+  [class.focused]="focused">
+
+  <label for="">
+    {{ label }}
+  </label>
+
+  <section class="input">
+
+    <div class="input-wrapper">
+      <textarea
+        #input
+        type="text"
+        [formControl]="formControl"
+        [disabled]="disabled"
+        (keyup)="writeValue($event.target.value, true)"
+        (focus)="focused = true"
+        (blur)="onTouched(); focused = false">
+      </textarea>
+
+
+
+    </div>
+  </section>
+
+</section>
+
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>

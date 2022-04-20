@@ -1,0 +1,20 @@
+.input-wrapper {
+  button {
+    background: none;
+    outline: none;
+    border: none;
+
+    i {
+      color: #333;
+      transition: all 0.175s ease-in-out;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      i {
+        color: var(--outline-color);
+      }
+    }
+  }
+}

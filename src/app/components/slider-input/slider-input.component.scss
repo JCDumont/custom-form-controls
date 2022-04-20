@@ -1,0 +1,35 @@
+mat-slider.custom-mat-slider {
+  width: 100%;
+  padding: 0 !important;
+  height: 38px;
+  overflow: hidden;
+  padding: 6px 8px !important;
+
+  .mat-slider-wrapper {
+    top: 19px;
+  }
+
+  .input {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mat-slider-thumb {
+    &:before {
+      content: '';
+      position: absolute;
+      width: 4000px;
+      background-color: rgba(56, 189, 248, 0.2 );
+      height: 80px;
+      top: -30px;
+      left: -3990px;
+    }
+  }
+}
+
+app-slider-input {
+  .input {
+
+    padding: 0 !important;
+  }
+}

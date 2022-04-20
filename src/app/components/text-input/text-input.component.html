@@ -1,0 +1,45 @@
+<section
+  class="form-input"
+  [class.disabled]="disabled"
+  [class.focused]="focused">
+
+  <label for="">
+    {{ label }}
+  </label>
+
+  <section class="input">
+
+    <p *ngIf="prefix">
+      {{ prefix }}
+    </p>
+    <div class="input-wrapper">
+      <input
+        #input
+        type="text"
+        [formControl]="formControl"
+        [disabled]="disabled"
+        (keyup)="writeValue($event.target.value, true)"
+        (focus)="focused = true"
+        (blur)="onTouched(); focused = false">
+
+        <p class="suffix-placeholder" *ngIf="suffix">{{ suffix }} </p>
+        <div
+          *ngIf="suffix"
+           class="suffix-overlay">
+          <p>{{input.value}}</p>
+          <p>
+            {{ suffix }}
+          </p>
+        </div>
+    </div>
+  </section>
+
+</section>
+
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>

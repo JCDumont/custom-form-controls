@@ -1,0 +1,35 @@
+<section
+  class="form-input"
+  [class.disabled]="disabled"
+  [class.focused]="focused">
+
+  <label for="">
+    {{ label }}
+  </label>
+
+  <section class="input">
+
+    <div class="input-wrapper">
+
+      <mat-slider
+        #slider
+        class="custom-mat-slider"
+        [disabled]="disabled"
+        [formControl]="formControl"
+        [min]="min"
+        [max]="max"
+        [step]="steps"
+        (change)="writeValue($event.value, true); slider.blur()">
+      </mat-slider>
+    </div>
+  </section>
+
+</section>
+
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>
