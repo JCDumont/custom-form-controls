@@ -1,16 +1,18 @@
 <section
-  class="form-input"
+  class="form-input app-slider-input"
   [class.disabled]="disabled"
-  [class.focused]="focused">
+  [class.full-selection]="inputValue === max"
+  [class.no-selection]="inputValue === min"
+  [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
+  [class.focused]="focused && !disabled">
 
-  <label for="">
+  <label *ngIf="showLabel" for="">
     {{ label }}
   </label>
 
   <section class="input">
 
     <div class="input-wrapper">
-
       <mat-slider
         #slider
         class="custom-mat-slider"
@@ -19,17 +21,39 @@
         [min]="min"
         [max]="max"
         [step]="steps"
+        [tickInterval]="10"
+        (focus)="onTouched(); focused = true"
+        (blur)="focused = false;"
+        (input)="inputValue = $event.value"
         (change)="writeValue($event.value, true); slider.blur()">
       </mat-slider>
     </div>
+
   </section>
+  <!-- If you want to add labels etc to the bottom of the slider! -->
+  <ng-content></ng-content>
 
 </section>
 
 <section
-  *ngIf="formControl?.invalid"
+  *ngIf="formControl?.invalid && (formControl.touched || submitAttempt)"
   class="errors">
   <p *ngFor="let error of formControl.errors | keyvalue">
     {{ error.key }}
   </p>
+</section>
+<section
+  *ngIf="debug"
+  class="debug-items">
+
+
+  <div class="data-item">
+    <p>Value</p>
+    <p>{{ formControl.value || value }}</p>
+  </div>
+
+  <div class="data-item">
+    <p>Slider value</p>
+    <p>{{ inputValue }}</p>
+  </div>
 </section>

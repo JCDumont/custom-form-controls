@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -48,6 +47,7 @@ export class AppComponent {
     end: new FormControl(new Date()),
   });
 
+
   constructor() {
 
     setTimeout(() => {
@@ -67,7 +67,6 @@ export class AppComponent {
 
       this.dateControl.disable();
     }, 5000);
-
 
     setTimeout(() => {
       this.test.enable();

@@ -44,7 +44,7 @@
             [disabled]="disabled"
 
             (focus)="focused = true"
-            (blur)="onTouched(); focused = false">
+            (blur)="focused = false">
 
             <mat-date-range-input
               [max]="value.end"
@@ -87,7 +87,7 @@
             [disabled]="disabled"
 
             (focus)="focused = true"
-            (blur)="onTouched(); focused = false">
+            (blur)="focused = false">
 
             <mat-date-range-input
               [min]="value.start"

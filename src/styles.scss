@@ -1,17 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200;400;700&display=swap');
-@import "~@ng-select/ng-select/themes/default.theme.css";
-
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css");
 body {
   background: #f1f3f4;
 }
 
 :root {
   --text-colour: #333;
-  --label-colour: rgba( 0, 0, 0, 0.5);
-  --label-focused: rgba( 0, 0, 0, 0.9);
 
-  --outline-color: #38bdf8;
-  --error :#dc2626;
+  --default-label-color: hsla(0, 0%, 0%, 0.5);
+  --focused-label-color: hsla(0, 0%, 0%, 0.9);
+
+
+  --default-input-border: hsla(0, 0%, 0%, 0.5);
+  --focused-input-border: hsla(0, 0%, 0%, 0.9);
+
+  --outline-color: hsla(262, 83%, 78%, 0.7);
+  --error :hsl(0, 72%, 51%);
+  --error-600: hsla(0, 72%, 82%, 1);
+
+  --form-input-color: hsl(262, 83%, 58%);
+  --form-input-color-300: hsla(262, 83%, 78%, 0.7);
+
+  --form-input-color-600: hsla(262, 83%, 78%, 0.4);
 }
 
 
@@ -34,7 +44,7 @@ html {
   flex-direction: column;
 
   label {
-    color: var(--label-colour);
+    color: var(--default-label-color);
     font-size: 14px;
     margin-bottom: 4px;
     transition: all 0.175s ease-in-out;
@@ -106,10 +116,11 @@ html {
     padding: 6px 8px;
     border-radius: 4px;
     line-height: 21px;
-    border: solid 1px var(--label-colour);
+    border: solid 1px var(--default-input-border);
     transition: all 0.12  5s ease-out;
     outline: solid 2px transparent;
     margin-bottom: 12px;
+    background: white;
   }
 
   textarea {
@@ -118,7 +129,7 @@ html {
 
   &.focused {
     label {
-      color: var(--label-focused);
+      color: var(--focused-label-color);
     }
 
     .input {
@@ -138,7 +149,16 @@ html {
   &.invalid {
     .input {
       border: solid 1px var(--error);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+
+      transition: all 0.175s ease-in-out;
+      outline: solid 2px var(--error-600);
+    }
+
+    &.focused {
+      .input {
+        outline-color: var(--error);
+      }
     }
   }
 

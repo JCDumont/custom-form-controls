@@ -42,3 +42,16 @@
     {{ error.key }}
   </p>
 </section>
+
+
+<section
+  *ngIf="debug"
+  class="debug-items">
+
+
+  <div class="data-item">
+    <p>Value</p>
+    <p>{{ formControl.value || value }}</p>
+  </div>
+
+</section>

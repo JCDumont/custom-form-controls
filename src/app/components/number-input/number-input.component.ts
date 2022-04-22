@@ -23,7 +23,7 @@ export class NumberInputComponent extends CustomFormControl implements ControlVa
   }
 
   writeValue( value: any, inputChange: boolean = false ): void {
-    const decimalMax = this.format.substring(1, this.format.length);
+    const decimalMax = this.format?.substring(1, this.format?.length);
 
     if ( decimalMax ) {
       value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));
@@ -40,7 +40,7 @@ export class NumberInputComponent extends CustomFormControl implements ControlVa
   }
 
   checkFormat(): void {
-    const decimalMax = this.format.substring(1, this.format.length);
+    const decimalMax = this.format?.substring(1, this.format.length);
     let value = this.value;
 
     if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {

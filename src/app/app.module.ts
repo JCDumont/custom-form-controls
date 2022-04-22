@@ -13,7 +13,6 @@ import { TextInputModule } from 'src/app/components/text-input/text-input.module
 import { ToggleSlideModule } from 'src/app/components/toggle-slide/toggle-slide.module';
 import { AppComponent } from './app.component';
 
-
 @NgModule({
   declarations: [
     AppComponent

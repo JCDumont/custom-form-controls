@@ -1,6 +1,7 @@
 <section
   class="form-input"
   [class.disabled]="disabled"
+  [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
   [class.focused]="focused">
 
   <label for="">
@@ -16,19 +17,16 @@
         [formControl]="formControl"
         [disabled]="disabled"
         (keyup)="writeValue($event.target.value, true)"
-        (focus)="focused = true"
+        (focus)="onTouched(); focused = true;"
         (blur)="onTouched(); focused = false">
       </textarea>
-
-
-
     </div>
   </section>
 
 </section>
 
 <section
-  *ngIf="formControl?.invalid"
+  *ngIf="formControl?.invalid && (formControl.touched || submitAttempt)"
   class="errors">
   <p *ngFor="let error of formControl.errors | keyvalue">
     {{ error.key }}

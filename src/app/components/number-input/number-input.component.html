@@ -2,7 +2,8 @@
   class="form-input"
   [class.disabled]="disabled"
   [class.focused]="focused"
-  [class.invalid]="formControl.invalid">
+    [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
+>
 
   <label for="">
     {{ label }}
@@ -22,7 +23,7 @@
         [disabled]="disabled"
         (keyup)="writeValue($event.target.value, true)"
         (keydown)="checkInput($event)"
-        (focus)="focused = true"
+        (focus)="onTouched(); focused = true"
         (blur)="checkFormat(); onTouched(); focused = false">
 
         <p class="suffix-placeholder" *ngIf="suffix">{{ suffix }} </p>
@@ -40,9 +41,22 @@
 </section>
 
 <section
-  *ngIf="formControl?.invalid"
+*ngIf="formControl?.invalid && (formControl.touched || submitAttempt)"
   class="errors">
   <p *ngFor="let error of formControl.errors | keyvalue">
     {{ error.key }}
   </p>
+</section>
+
+
+<section
+  *ngIf="debug"
+  class="debug-items">
+
+
+  <div class="data-item">
+    <p>Value</p>
+    <p>{{ formControl.value || value }}</p>
+  </div>
+
 </section>

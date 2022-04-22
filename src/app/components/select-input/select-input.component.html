@@ -2,7 +2,7 @@
   class="form-input"
   [class.disabled]="disabled"
   [class.focused]="focused"
-  [class.invalid]="formControl.invalid">
+  [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)">
 
   <label for="">
     {{ label }}
@@ -15,33 +15,34 @@
       {{ prefix }}
     </p>
     <div class="input-wrapper">
-
       <ng-select
         #select
         [ngModel]="formControl.value"
         (ngModelChange)="writeValue($event)"
-        [items]="options"
+        [items]="selectOptions"
         bindLabel="name"
         [bindValue]="undefined"
         [virtualScroll]="true"
         [disabled]="disabled"
         [multiple]="multiSelect"
+        [clearable]="clearable"
+        [dropdownPosition]="dropdownPosition"
+        (open)="handleOpen()"
         (blur)="onTouched(); focused = false"
-        (focus)="focused = true">
+        (focus)="formControl.markAsTouched(); focused = true">
 
         <ng-template ng-label-tmp let-item="item" let-clear="clear">
           <span class="ng-value-label">{{item.name}}</span>
           <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
-      </ng-template>
+        </ng-template>
       </ng-select>
     </div>
   </section>
 
 </section>
-
 <section
-  *ngIf="formControl?.invalid"
-  class="errors">
+*ngIf="formControl?.invalid && (formControl.touched || submitAttempt)"
+class="errors">
   <p *ngFor="let error of formControl.errors | keyvalue">
     {{ error.key }}
   </p>

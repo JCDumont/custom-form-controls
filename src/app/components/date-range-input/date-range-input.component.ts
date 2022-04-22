@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatDateRangePicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
 import { Moment } from 'moment';
@@ -14,11 +14,11 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: forwardRef(() => DateRangeInputComponent )
+      useExisting: forwardRef(() => DateRangeInputComponent)
     }
   ]
 })
-export class DateRangeInputComponent extends CustomFormControl implements OnInit, OnChanges, ControlValueAccessor {
+export class DateRangeInputComponent extends CustomFormControl implements OnInit, OnChanges {
 
   @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;
 

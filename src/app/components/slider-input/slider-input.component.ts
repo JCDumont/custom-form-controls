@@ -1,5 +1,5 @@
-import { Component, forwardRef, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomFormControl } from 'src/app/components/base/base-form-input';
 
 @Component({
@@ -15,7 +15,8 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
     }
   ]
 })
-export class SliderInputComponent extends CustomFormControl implements OnInit, ControlValueAccessor {
+export class SliderInputComponent extends CustomFormControl {
+
 
   @Input() min: number = 0;
 
@@ -23,11 +24,10 @@ export class SliderInputComponent extends CustomFormControl implements OnInit, C
 
   @Input() steps: number = 1;
 
+  inputValue: number = this.formControl.value || 0;
+
   constructor() {
     super();
   }
-
-  ngOnInit(): void {
-  }
-
 }
+
