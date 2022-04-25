@@ -41,6 +41,11 @@ export class NumberInputComponent extends CustomFormControl implements ControlVa
 
   checkFormat(): void {
     const decimalMax = this.format?.substring(1, this.format.length);
+
+    if ( this.value === '' || !this.value && this.defaultValue ) {
+      this.value = this.defaultValue;
+    }
+
     let value = this.value;
 
     if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {

@@ -100,3 +100,11 @@ Disabled.args = {
   ...Default.args,
   disabled: true,
 }
+
+const defaultvaluecontrol = new FormControl();
+export const DefaultValue = Template.bind({});
+DefaultValue.args = {
+  ...Default.args,
+  defaultValue: 'HI THERE EVERYONE',
+  formControl: defaultvaluecontrol,
+}

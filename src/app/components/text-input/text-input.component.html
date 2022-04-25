@@ -21,7 +21,7 @@
         [disabled]="disabled"
         (keyup)="writeValue($event.target.value, true)"
         (focus)="onTouched(); focused = true"
-        (blur)="onTouched(); focused = false">
+        (blur)="onBlur()">
 
         <p class="suffix-placeholder" *ngIf="suffix">{{ suffix }} </p>
         <div

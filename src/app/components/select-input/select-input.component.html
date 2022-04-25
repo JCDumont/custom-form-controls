@@ -1,43 +1,99 @@
 <section
   class="form-input"
   [class.disabled]="disabled"
-  [class.focused]="focused"
+  [class.focused]="select?.focused"
   [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)">
 
   <label for="">
     {{ label }}
   </label>
 
+  <div class="select-input-container">
+    <section class="select input">
 
-  <section class="select input">
+      <p *ngIf="prefix">
+        {{ prefix }}
+      </p>
+      <div class="input-wrapper">
+        <ng-select
+          #select
+          [ngModel]="formControl.value"
+          (ngModelChange)="writeValue($event)"
+          [items]="selectOptions"
+          [bindLabel]="bindLabel"
+          [bindValue]="bindValue"
+          [virtualScroll]="true"
+          [disabled]="disabled"
+          [multiple]="multiSelect"
+          [clearable]="clearable"
+          [dropdownPosition]="dropdownPosition"
+          (search)="handleUserSearch()"
+          (open)="handleOpen()"
+          (blur)="onBlur()"
+          (focus)="formControl.markAsTouched(); focused = true">
 
-    <p *ngIf="prefix">
-      {{ prefix }}
-    </p>
-    <div class="input-wrapper">
-      <ng-select
-        #select
-        [ngModel]="formControl.value"
-        (ngModelChange)="writeValue($event)"
-        [items]="selectOptions"
-        bindLabel="name"
-        [bindValue]="undefined"
-        [virtualScroll]="true"
-        [disabled]="disabled"
-        [multiple]="multiSelect"
-        [clearable]="clearable"
-        [dropdownPosition]="dropdownPosition"
-        (open)="handleOpen()"
-        (blur)="onTouched(); focused = false"
-        (focus)="formControl.markAsTouched(); focused = true">
+          <ng-template
+            *ngIf="templateName === undefined"
+            ng-label-tmp let-item="item" let-clear="clear">
+            <span class="ng-value-label">
+              {{
+                bindLabel ?
+                  item[bindLabel] || 'None'
+                  : item || 'None'
+              }}
+          </span>
+            <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+          </ng-template>
 
-        <ng-template ng-label-tmp let-item="item" let-clear="clear">
-          <span class="ng-value-label">{{item.name}}</span>
-          <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
-        </ng-template>
-      </ng-select>
-    </div>
-  </section>
+
+
+
+          <!-- Select options -->
+
+
+          <ng-template
+        ng-option-tmp
+        *ngIf="templateName === undefined"
+        let-item="item"
+        let-item$="item$"
+        let-index="index">
+        <mat-checkbox
+          *ngIf="checkBoxSelect"
+          [disabled]="true"
+          [checked]="item$.selected">
+        </mat-checkbox>
+
+        <div
+          #optionHolder
+          class="mat-option-text"
+          [matTooltip]="( labelFormatter ? labelFormatter(item) : item[ bindLabel ] )"
+          [matTooltipDisabled]="tooltipEnabled"
+          matTooltipClass="acu-select-tooltip"
+          (mouseover)="showToolTip(optionHolder, option)"
+        >
+          <span #option
+                [innerHtml]="( labelFormatter
+                 ? labelFormatter(item)
+                  : ( bindLabel ? item[ bindLabel ] : item )
+                )">
+          </span>
+        </div>
+      </ng-template>
+
+        </ng-select>
+      </div>
+
+
+    </section>
+    <button
+      *ngIf="showRemoveIcon"
+      matTooltip="Remove row"
+      class="remove-row-icon"
+      (click)="removeRow.emit()">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+    </button>
+  </div>
+
 
 </section>
 <section

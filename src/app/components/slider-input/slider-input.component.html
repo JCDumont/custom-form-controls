@@ -23,7 +23,7 @@
         [step]="steps"
         [tickInterval]="10"
         (focus)="onTouched(); focused = true"
-        (blur)="focused = false;"
+        (blur)="onBlur()"
         (input)="inputValue = $event.value"
         (change)="writeValue($event.value, true); slider.blur()">
       </mat-slider>

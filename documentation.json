@@ -52,12 +52,12 @@
     "directives": [
         {
             "name": "CustomFormControl",
-            "id": "directive-CustomFormControl-ff6b5ee7b0e8c86da6b412221ef8bc22bf76cf09ba6e4ca7a817b93758a069f6d4252d0e72e4a2ce785589c3a0c9ebf562fd964f3536c4b5174dc30ab3963887",
+            "id": "directive-CustomFormControl-2ba55d09ced9b385d6a60e764fb253f2dc3a8e914fae7af8184dc1d5bf46b6120e57fe232c5e1c2f79667cf258f2b71d0888e794bb71856c5a7da66bc30817ab",
             "file": "src/app/components/base/base-form-input.ts",
             "type": "directive",
             "description": "",
             "rawdescription": "\n",
-            "sourceCode": "import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';\r\nimport { AbstractControl, ControlValueAccessor, FormControl } from '@angular/forms';\r\n\r\n@Directive()\r\nexport class CustomFormControl implements OnChanges, ControlValueAccessor {\r\n\r\n  @Input() formControl: AbstractControl = new FormControl();\r\n\r\n  @Input() label: string;\r\n\r\n  @Input() disabled: boolean = false;\r\n\r\n  @Input() fieldDisabledOverride: boolean = false; // This overrides disabled state\r\n\r\n  @Input() prefix;\r\n\r\n  @Input() suffix;\r\n\r\n  @Input() showLabel: boolean = true;\r\n\r\n  @Input() submitAttempt: boolean = false;\r\n\r\n  @Input() debug: boolean = false; // Only to be used in dev / storybook\r\n\r\n  onChange\r\n\r\n  focused: boolean = false;\r\n\r\n  value: any;\r\n\r\n  customFormControl: boolean = false;\r\n\r\n  onTouched: () => void;\r\n\r\n  ngOnChanges ( changes: SimpleChanges): void {\r\n    if ( changes.formControl ) {\r\n      this.customFormControl = true;\r\n    }\r\n  }\r\n\r\n  writeValue( value: any, inputChange: boolean = false ): void {\r\n    if ( this.formControl.updateOn === 'blur' ) {\r\n      return;\r\n    }\r\n\r\n    this.value = value;\r\n\r\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\r\n      this.formControl.setValue(value);\r\n    }\r\n\r\n    // On want to trigger on change if it is not a form control\r\n    if ( !this.customFormControl ) {\r\n      this.onChange?.(value);\r\n    }\r\n  }\r\n\r\n  registerOnChange (fn: any): void {\r\n    this.onChange = fn;\r\n  }\r\n\r\n  registerOnTouched(fn: any): void {\r\n    this.onTouched = fn;\r\n  }\r\n\r\n  setDisabledState(isDisabled: boolean): void {\r\n\r\n    if ( this.fieldDisabledOverride ) {\r\n      this.disabled = true;\r\n      this.formControl.disable();\r\n      return;\r\n    }\r\n\r\n    this.disabled = isDisabled;\r\n    if (isDisabled === this.formControl.disabled) {\r\n      return;\r\n     }\r\n\r\n    if ( this.disabled ) {\r\n      this.formControl.disable();\r\n    } else {\r\n      this.formControl.enable();\r\n    }\r\n  }\r\n}\r\n",
+            "sourceCode": "import { Directive, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';\r\nimport { AbstractControl, ControlValueAccessor, FormControl } from '@angular/forms';\r\n\r\n@Directive()\r\nexport class CustomFormControl implements OnInit, OnChanges, ControlValueAccessor {\r\n\r\n  @Input() formControl: AbstractControl = new FormControl();\r\n\r\n  @Input() label: string;\r\n\r\n  @Input() disabled: boolean = false;\r\n\r\n  @Input() fieldDisabledOverride: boolean = false; // This overrides disabled state\r\n\r\n  @Input() prefix;\r\n\r\n  @Input() suffix;\r\n\r\n  @Input() showLabel: boolean = true;\r\n\r\n  @Input() submitAttempt: boolean = false;\r\n\r\n  @Input() defaultValue: any;\r\n\r\n  @Input() debug: boolean = false; // Only to be used in dev / storybook\r\n\r\n  onChange\r\n\r\n  focused: boolean = false;\r\n\r\n  value: any;\r\n\r\n  customFormControl: boolean = false;\r\n\r\n  onTouched: () => void;\r\n\r\n  ngOnInit (): void {\r\n    if ( !this.formControl.value && this.defaultValue !== undefined  ) {\r\n      this.formControl.setValue(this.defaultValue, { emitEvent: false });\r\n    }\r\n  }\r\n\r\n  ngOnChanges ( changes: SimpleChanges): void {\r\n    if ( changes.formControl ) {\r\n      this.customFormControl = true;\r\n    }\r\n  }\r\n\r\n  writeValue( value: any, inputChange: boolean = false ): void {\r\n    if ( this.formControl.updateOn === 'blur' ) {\r\n      return;\r\n    }\r\n\r\n    this.value = value;\r\n\r\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\r\n      this.formControl.setValue(value);\r\n    }\r\n\r\n    // On want to trigger on change if it is not a form control\r\n    if ( !this.customFormControl ) {\r\n      this.onChange?.(value);\r\n    }\r\n  }\r\n\r\n  registerOnChange (fn: any): void {\r\n    this.onChange = fn;\r\n  }\r\n\r\n  registerOnTouched(fn: any): void {\r\n    this.onTouched = fn;\r\n  }\r\n\r\n  onBlur(): void {\r\n    this.focused = false;\r\n    const noValue = this.value === ''\r\n     || this.value === undefined\r\n     || this.value === null\r\n     || this.value?.length === 0;\r\n\r\n    if ( noValue && this.defaultValue !== undefined  ) {\r\n      this.value = JSON.parse(JSON.stringify(this.defaultValue));\r\n      this.formControl.setValue(this.value);\r\n    }\r\n  }\r\n\r\n  setDisabledState(isDisabled: boolean): void {\r\n\r\n    if ( this.fieldDisabledOverride ) {\r\n      this.disabled = true;\r\n      this.formControl.disable();\r\n      return;\r\n    }\r\n\r\n    this.disabled = isDisabled;\r\n    if (isDisabled === this.formControl.disabled) {\r\n      return;\r\n     }\r\n\r\n    if ( this.disabled ) {\r\n      this.formControl.disable();\r\n    } else {\r\n      this.formControl.enable();\r\n    }\r\n  }\r\n}\r\n",
             "providers": [],
             "inputsClass": [
                 {
@@ -65,8 +65,16 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": []
                 },
                 {
@@ -153,7 +161,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31
+                    "line": 33
                 },
                 {
                     "name": "focused",
@@ -163,7 +171,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27
+                    "line": 29
                 },
                 {
                     "name": "onChange",
@@ -172,7 +180,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25
+                    "line": 27
                 },
                 {
                     "name": "onTouched",
@@ -181,7 +189,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33
+                    "line": 35
                 },
                 {
                     "name": "value",
@@ -190,7 +198,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29
+                    "line": 31
                 }
             ],
             "methodsClass": [
@@ -207,7 +215,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -223,6 +231,26 @@
                     ]
                 },
                 {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 37,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -235,7 +263,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -263,7 +291,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -291,7 +319,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -326,7 +354,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -353,6 +381,7 @@
                 }
             ],
             "implements": [
+                "OnInit",
                 "OnChanges",
                 "ControlValueAccessor"
             ]
@@ -361,7 +390,7 @@
     "components": [
         {
             "name": "AppComponent",
-            "id": "component-AppComponent-934ba775101e7fdcaea15c36c2f47c0bdc65e4e79c969868dc297deecaae9fb88b6249f954f9ce37f0b85faf512c4cff57a0ae605c1eede90c894c1d3bea9b39",
+            "id": "component-AppComponent-052936fa35e309108fd0d629a51634f2433d652d520fe7422ca2844498049e5016e9007664eb0e5a36734dc2dc190c05638d2ade34a62caf33a6c08faf03a3bb",
             "file": "src/app/app.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -388,7 +417,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 110
+                    "line": 31
                 },
                 {
                     "name": "dateInputControl",
@@ -398,7 +427,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 108
+                    "line": 29
                 },
                 {
                     "name": "dateRangeControl",
@@ -408,7 +437,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 124
+                    "line": 45
                 },
                 {
                     "name": "dateRangeInput",
@@ -418,7 +447,7 @@
                     "type": "object",
                     "optional": false,
                     "description": "",
-                    "line": 119
+                    "line": 40
                 },
                 {
                     "name": "multiSelectInputModel",
@@ -427,7 +456,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 102
+                    "line": 23
                 },
                 {
                     "name": "numberInput",
@@ -437,7 +466,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 93
+                    "line": 14
                 },
                 {
                     "name": "numberInputBlur",
@@ -447,7 +476,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 94
+                    "line": 15
                 },
                 {
                     "name": "numberModel",
@@ -457,7 +486,7 @@
                     "type": "number",
                     "optional": false,
                     "description": "",
-                    "line": 104
+                    "line": 25
                 },
                 {
                     "name": "selectInput",
@@ -467,7 +496,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 95
+                    "line": 16
                 },
                 {
                     "name": "selectInputModel",
@@ -476,7 +505,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 100
+                    "line": 21
                 },
                 {
                     "name": "sliderControl",
@@ -486,7 +515,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 114
+                    "line": 35
                 },
                 {
                     "name": "sliderInput",
@@ -496,7 +525,7 @@
                     "type": "number",
                     "optional": false,
                     "description": "",
-                    "line": 113
+                    "line": 34
                 },
                 {
                     "name": "test",
@@ -506,7 +535,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 89
+                    "line": 10
                 },
                 {
                     "name": "testBlur",
@@ -516,7 +545,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 91
+                    "line": 12
                 },
                 {
                     "name": "textareaText",
@@ -526,7 +555,7 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 106
+                    "line": 27
                 },
                 {
                     "name": "title",
@@ -536,7 +565,7 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 88
+                    "line": 9
                 },
                 {
                     "name": "toggleControl",
@@ -546,7 +575,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 117
+                    "line": 38
                 },
                 {
                     "name": "toggleInput",
@@ -556,7 +585,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 116
+                    "line": 37
                 }
             ],
             "methodsClass": [],
@@ -567,7 +596,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component } from '@angular/core';\nimport { FormControl, FormGroup, Validators } from '@angular/forms';\n\n// // Persist segment related data throughout the app\nconst SegmentInformation: any = {};\n\npublic trackSegmentEvent(\n  category: SegmentEventCategory,\n  action: SegmentEventAction,\n  extraData?: any,\n): void {\n  if (!this.trackingContext?.trackingEnabled) {\n    return;\n  }\n\n  // analytics.js must be on the page, and category and action are mandatory so we need to check these before tracking\n  if (category && action && window.analytics) {\n    window.analytics.track(`${category} ${action}`, { ...this.mapToEventMetaData(this.trackingContext), ...keysToSnake(extraData) });\n  }\n}\n\npublic mapToEventMetaData(context: UsageTrackingContext): UsageTrackingMetaData {\n  return {\n    userId: context.userId,\n    client: context.client,\n    environment: context.environment,\n    app: {\n      version: context.version,\n      name: context.name,\n    },\n  }\n}\n\nexport const SegmentTracking = {\n  _trackSegmentEvent: (category, action, extraData) => {\n\n    if( SegmentInformation.trackingContext?.trackingEnabled ) {\n      return;\n    }\n\n    if (category && action && window.analytics) {\n      window.analytics.track(\n        `${category} ${action}`,\n        { ...SegmentTracking._mapToEventMetaData(SegmentInformation.trackingContext),\n          ...keysToSnake(extraData) }\n        );\n    }\n  },\n  _mapToEventMetaData: (context: UsageTrackingContext) => {\n    return {\n      userId: context.userId,\n      client: context.client,\n      environment: context.environment,\n      app: {\n        version: context.version,\n        name: context.name,\n      },\n    }\n  },\n  _dashboard: {\n    tileExpanded: ( data ) => {\n      SegmentTracking._trackSegmentEvent('Dashboard', 'Tile expanded', data);\n    }\n  },\n  // Gemeric functions that can be called / added\n  pageLoded: ( pageName: string ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageLoad', {});\n  },\n\n  // Others may be\n  pageError: ( pageName ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageError', {});\n  },\n  pagePartialLoad: (pageName) => {\n\n  },\n  dashboardTileExpanded: (data) => {\n\n  }\n}\n\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss']\n})\nexport class AppComponent {\n  title = 'custom-form-controls';\n  test = new FormControl('Tester', Validators.compose([Validators.required]));\n\n  testBlur = new FormControl('Tester', { updateOn: 'blur' });\n\n  numberInput = new FormControl('123.4', Validators.compose([Validators.min(200)]));\n  numberInputBlur = new FormControl('1234.4423', { updateOn: 'blur' });\n  selectInput = new FormControl({\n    value: 'Test',\n    name: 'Test',\n  });\n\n  selectInputModel;\n\n  multiSelectInputModel;\n\n  numberModel = 123;\n\n  textareaText = 'text area';\n\n  dateInputControl = new Date();\n\n  dateControl = new FormControl(new Date());\n\n\n  sliderInput = 2;\n  sliderControl = new FormControl(2);\n\n  toggleInput = false;\n  toggleControl = new FormControl(true);\n\n  dateRangeInput = {\n    start: new Date(),\n    end: new Date(),\n  };\n\n  dateRangeControl = new FormGroup({\n    start: new FormControl(new Date()),\n    end: new FormControl(new Date()),\n  });\n\n\n  constructor() {\n\n    // // This is set once we have all the segmenty stuff from wherver it comes from\n    // SegmentInformation['http'] = ( pageName ) => { console.log('MAKING A HTTP CALL!', pageName ) };\n    // SegmentInformation['key'] = {\n    //   key: 123,\n    // };\n\n    // SegmentTracking.dashboardTileExpanded(`${this.title} ${TileStatus[tile.statusCode]}`);\n\n    SegmentTracking._dashboard.tileExpanded({});\n\n    // SegmentTracking.pageLoded('Promotions');\n    // // SegmentTracking({}).setup(1234);\n\n    // // console.log(SegmentTracking);\n\n    setTimeout(() => {\n      this.title = 'testeterer';\n      this.test.setValue('Hey there!');\n      this.testBlur.setValue('Blur update!');\n\n      this.numberInput.setValue(123.2890347238947238947239847392874);\n      this.numberInput.setErrors({invalid: true, minLength: 4});\n      this.numberInputBlur.setValue(21323.2890347238947238947239847392874);\n\n      this.test.disable();\n      this.selectInput.disable();\n\n      this.dateInputControl = new Date();\n      this.dateControl.setValue(new Date());\n\n      this.dateControl.disable();\n    }, 5000);\n\n\n    setTimeout(() => {\n      this.test.enable();\n      this.selectInput.enable();\n    }, 10000);\n\n    this.numberInputBlur.valueChanges\n    .subscribe({\n      next: ( val ) => {\n        console.log(val);\n      }\n    });\n  }\n}\n",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { FormControl, FormGroup, Validators } from '@angular/forms';\n@Component({\n  selector: 'app-root',\n  templateUrl: './app.component.html',\n  styleUrls: ['./app.component.scss']\n})\nexport class AppComponent {\n  title = 'custom-form-controls';\n  test = new FormControl('Tester', Validators.compose([Validators.required]));\n\n  testBlur = new FormControl('Tester', { updateOn: 'blur' });\n\n  numberInput = new FormControl('123.4', Validators.compose([Validators.min(200)]));\n  numberInputBlur = new FormControl('1234.4423', { updateOn: 'blur' });\n  selectInput = new FormControl({\n    value: 'Test',\n    name: 'Test',\n  });\n\n  selectInputModel;\n\n  multiSelectInputModel;\n\n  numberModel = 123;\n\n  textareaText = 'text area';\n\n  dateInputControl = new Date();\n\n  dateControl = new FormControl(new Date());\n\n\n  sliderInput = 2;\n  sliderControl = new FormControl(2);\n\n  toggleInput = false;\n  toggleControl = new FormControl(true);\n\n  dateRangeInput = {\n    start: new Date(),\n    end: new Date(),\n  };\n\n  dateRangeControl = new FormGroup({\n    start: new FormControl(new Date()),\n    end: new FormControl(new Date()),\n  });\n\n\n  constructor() {\n\n    setTimeout(() => {\n      this.title = 'testeterer';\n      this.test.setValue('Hey there!');\n      this.testBlur.setValue('Blur update!');\n\n      this.numberInput.setValue(123.2890347238947238947239847392874);\n      this.numberInput.setErrors({invalid: true, minLength: 4});\n      this.numberInputBlur.setValue(21323.2890347238947238947239847392874);\n\n      this.test.disable();\n      this.selectInput.disable();\n\n      this.dateInputControl = new Date();\n      this.dateControl.setValue(new Date());\n\n      this.dateControl.disable();\n    }, 5000);\n\n    setTimeout(() => {\n      this.test.enable();\n      this.selectInput.enable();\n    }, 10000);\n\n    this.numberInputBlur.valueChanges\n    .subscribe({\n      next: ( val ) => {\n        console.log(val);\n      }\n    });\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -582,7 +611,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "args": [],
-                "line": 127
+                "line": 48
             },
             "templateData": "<section class=\"form-example\">\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Text inputs</h2>\n    </section>\n\n    <section class=\"forms\">\n      <app-text-input\n        label=\"Basic text input\"\n        [(ngModel)]=\"title\">\n      </app-text-input>\n\n      <app-text-input\n        label=\"Text input with NgModel\"\n        [disabled]=\"true\"\n        [(ngModel)]=\"title\">\n      </app-text-input>\n\n      <app-text-input\n        label=\"Text input form control\"\n        [formControl]=\"test\">\n      </app-text-input>\n\n      <app-text-input\n        label=\"Text input update on blur (with suffix / prefix)\"\n        prefix=\"$\"\n        suffix=\"suffix example\"\n        [formControl]=\"testBlur\">\n      </app-text-input>\n    </section>\n  </section>\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Number inputs</h2>\n    </section>\n\n    <section class=\"forms\">\n      <app-number-input\n          label=\"Number input\"\n          format=\"C2\"\n          prefix=\"£\"\n          [formControl]=\"numberInput\">\n        </app-number-input>\n\n        <app-number-input\n          label=\"Number blur input\"\n          format=\"C3\"\n          [formControl]=\"numberInputBlur\">\n        </app-number-input>\n\n\n        <app-number-input\n          label=\"Number model input\"\n          format=\"C3\"\n          [(ngModel)]=\"numberModel\">\n        </app-number-input>\n\n    </section>\n  </section>\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Select inputs</h2>\n    </section>\n\n    <section class=\"forms\">\n\n  <app-select-input\n      label=\"Select input\"\n      [disabled]=\"true\"\n      [formControl]=\"selectInput\">\n    </app-select-input>\n\n    <app-select-input\n      label=\"Select input model\"\n      [(ngModel)]=\"selectInputModel\">\n    </app-select-input>\n\n\n    <div class=\"side-by-side\">\n      <app-select-input\n      label=\"Select input model\"\n      [(ngModel)]=\"selectInputModel\">\n    </app-select-input>\n\n    <app-slider-input\n    label=\"Form slider\"\n    [formControl]=\"sliderControl\">\n\n  </app-slider-input>\n\n    </div>\n    <app-select-input\n      label=\"Select input model\"\n      [multiSelect]=\"true\"\n      [(ngModel)]=\"multiSelectInputModel\">\n    </app-select-input>\n\n    </section>\n  </section>\n\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Text area</h2>\n    </section>\n\n    <section class=\"forms\">\n      <app-text-area\n        label=\"Text area input\"\n        [(ngModel)]=\"textareaText\">\n      </app-text-area>\n\n    </section>\n  </section>\n\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Date inputs area</h2>\n    </section>\n\n    <section class=\"forms\">\n\n      <app-date-picker\n        [(ngModel)]=\"dateInputControl\"\n        label=\"NG model date\">\n      </app-date-picker>\n\n      <app-date-picker\n        [formControl]=\"dateControl\"\n        label=\"Date form control!\">\n      </app-date-picker>\n    </section>\n  </section>\n\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Date range input  area</h2>\n    </section>\n\n    <section class=\"forms\">\n      <!-- <app-date-range-input\n        label=\"model date range!\"\n        [(ngModel)]=\"dateRangeInput\">\n      </app-date-range-input> -->\n\n      <!-- <app-date-range-input\n        label=\"form control date range!\"\n        [formControl]=\"dateRangeControl\">\n      </app-date-range-input> -->\n\n    </section>\n  </section>\n\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Slider input</h2>\n    </section>\n\n    <section class=\"forms\">\n      <app-slider-input\n        label=\"ngmdoel slider\"\n        [(ngModel)]=\"sliderInput\">\n\n      </app-slider-input>\n\n      {{ sliderInput }}\n\n      <app-slider-input\n      label=\"Form slider\"\n      [formControl]=\"sliderControl\">\n\n    </app-slider-input>\n\n    {{ sliderControl.value }}\n    </section>\n  </section>\n\n  <section class=\"type-grouping\">\n    <section class=\"title\">\n      <h2>Toggle input</h2>\n    </section>\n\n    <section class=\"forms\">\n      <app-toggle-slide\n        label=\"ngModel toggle\"\n        [(ngModel)]=\"toggleInput\">\n      </app-toggle-slide>\n\n      <app-toggle-slide\n        label=\"form toggle\"\n        [formControl]=\"toggleControl\">\n      </app-toggle-slide>\n    </section>\n  </section>\n</section>\n\n"
         },
@@ -615,8 +644,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -726,7 +766,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -739,7 +779,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -751,7 +791,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -763,7 +803,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -775,7 +815,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -790,7 +830,10 @@
                     "typeParameters": [],
                     "line": 23,
                     "deprecated": false,
-                    "deprecationMessage": ""
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
                 },
                 {
                     "name": "ngOnChanges",
@@ -805,7 +848,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -824,6 +867,19 @@
                     }
                 },
                 {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -836,7 +892,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -867,7 +923,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -898,7 +954,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -936,7 +992,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1037,8 +1093,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -1175,7 +1242,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1188,7 +1255,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1200,7 +1267,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1212,7 +1279,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1224,7 +1291,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1280,7 +1347,10 @@
                     "typeParameters": [],
                     "line": 47,
                     "deprecated": false,
-                    "deprecationMessage": ""
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
                 },
                 {
                     "name": "openEndDatePicker",
@@ -1402,6 +1472,19 @@
                     }
                 },
                 {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -1414,7 +1497,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1445,7 +1528,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1476,7 +1559,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1548,7 +1631,7 @@
         },
         {
             "name": "NumberInputComponent",
-            "id": "component-NumberInputComponent-9aec00f67cc3679a0af27618206fd0c77030c1a915fe8b9cb7fb50d9d965fd66a92efb5d23f1d50b07dccede0d9f52831621b316dbbeda6ede5a0f90a04e0a69",
+            "id": "component-NumberInputComponent-066e170fbbf8148008dd9b966712462b2b2d314ecb92a6c3e65ac04e29134948c4c396364f1915f9010c82d989a3ee80e92f4c2db54018c1b892f0f9492a159f",
             "file": "src/app/components/number-input/number-input.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -1583,8 +1666,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -1694,7 +1788,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1707,7 +1801,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1719,7 +1813,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1731,7 +1825,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1743,7 +1837,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -1773,7 +1867,7 @@
                     "optional": false,
                     "returnType": "boolean",
                     "typeParameters": [],
-                    "line": 52,
+                    "line": 57,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1849,7 +1943,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1868,6 +1962,32 @@
                     }
                 },
                 {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 37,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -1880,7 +2000,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1911,7 +2031,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1942,7 +2062,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -1968,7 +2088,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-number-input',\n  templateUrl: './number-input.component.html',\n  styleUrls: ['./number-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NumberInputComponent)\n    }\n  ]\n})\nexport class NumberInputComponent extends CustomFormControl implements ControlValueAccessor {\n\n  @Input() format: string;\n\n  constructor() {\n    super();\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    const decimalMax = this.format?.substring(1, this.format?.length);\n\n    if ( decimalMax ) {\n      value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n    }\n\n    if (value !== `${this.formControl.value}` && !inputChange) {\n      this.formControl.setValue(`${value}`, { emitEvent: false });\n    }\n\n    this.value = value;\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n\n  checkFormat(): void {\n    const decimalMax = this.format?.substring(1, this.format.length);\n    let value = this.value;\n\n    if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {\n      this.value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n      this.formControl.setValue(parseFloat(`${value}`).toFixed(parseInt(decimalMax)));\n    }\n  }\n\n  checkInput(event): boolean {\n    if ([46, 8, 9, 27, 13, 110, 190].indexOf(event.keyCode) !== -1 ||\n        // Allow: Ctrl+A\n        (event.keyCode === 65 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+C\n        (event.keyCode === 67 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+V\n        (event.keyCode === 86 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+X\n        (event.keyCode === 88 && (event.ctrlKey || event.metaKey)) ||\n        (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: home, end, left, right\n        (event.keyCode >= 35 && event.keyCode <= 39)) {\n          // let it happen, don't do anything\n          return true;\n        }\n        // Ensure that it is a number and stop the keypress\n        if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {\n            event.preventDefault();\n        }\n\n\n    return true;\n  }\n}\n",
+            "sourceCode": "import { Component, forwardRef, Input } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-number-input',\n  templateUrl: './number-input.component.html',\n  styleUrls: ['./number-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NumberInputComponent)\n    }\n  ]\n})\nexport class NumberInputComponent extends CustomFormControl implements ControlValueAccessor {\n\n  @Input() format: string;\n\n  constructor() {\n    super();\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    const decimalMax = this.format?.substring(1, this.format?.length);\n\n    if ( decimalMax ) {\n      value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n    }\n\n    if (value !== `${this.formControl.value}` && !inputChange) {\n      this.formControl.setValue(`${value}`, { emitEvent: false });\n    }\n\n    this.value = value;\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n\n  checkFormat(): void {\n    const decimalMax = this.format?.substring(1, this.format.length);\n\n    if ( this.value === '' || !this.value && this.defaultValue ) {\n      this.value = this.defaultValue;\n    }\n\n    let value = this.value;\n\n    if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {\n      this.value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n      this.formControl.setValue(parseFloat(`${value}`).toFixed(parseInt(decimalMax)));\n    }\n  }\n\n  checkInput(event): boolean {\n    if ([46, 8, 9, 27, 13, 110, 190].indexOf(event.keyCode) !== -1 ||\n        // Allow: Ctrl+A\n        (event.keyCode === 65 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+C\n        (event.keyCode === 67 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+V\n        (event.keyCode === 86 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+X\n        (event.keyCode === 88 && (event.ctrlKey || event.metaKey)) ||\n        (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: home, end, left, right\n        (event.keyCode >= 35 && event.keyCode <= 39)) {\n          // let it happen, don't do anything\n          return true;\n        }\n        // Ensure that it is a number and stop the keypress\n        if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {\n            event.preventDefault();\n        }\n\n\n    return true;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -1993,7 +2113,7 @@
         },
         {
             "name": "SelectInputComponent",
-            "id": "component-SelectInputComponent-ff8b91b59db41099d5228962c41d733a38c43a59330d4a132cfbaab7a033a520d4140d9ae1704d2ba2c37674478ff24cdcd43fd170efc5fe98c0696c3040c433",
+            "id": "component-SelectInputComponent-f715e9cb09874d6c196bfe28073737ef4408ad50fe61923bf5e0a29ddc98949e4287667b6e6b009957be0769ddd1792377dbdb8636bf0c14962db1941809b369",
             "file": "src/app/components/select-input/select-input.component.ts",
             "encapsulation": [
                 "ViewEncapsulation.None"
@@ -2018,11 +2138,55 @@
             "viewProviders": [],
             "inputsClass": [
                 {
+                    "name": "bindLabel",
+                    "defaultValue": "'description'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 27,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "bindValue",
+                    "defaultValue": "'id'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 26,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "clearable",
+                    "defaultValue": "true",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 32,
+                    "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "dropdownPosition",
+                    "defaultValue": "'auto'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 37,
+                    "type": "DropdownPosition",
+                    "decorators": []
+                },
+                {
+                    "name": "dropdownWidth",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 38,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
                     "name": "multiSelect",
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 20,
+                    "line": 31,
                     "type": "boolean",
                     "decorators": []
                 },
@@ -2031,8 +2195,26 @@
                     "defaultValue": "[]",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 22,
+                    "line": 39,
                     "type": "any[]",
+                    "decorators": []
+                },
+                {
+                    "name": "showRemoveIcon",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 28,
+                    "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "useFirstValueAsDefault",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 33,
+                    "type": "boolean",
                     "decorators": []
                 },
                 {
@@ -2040,8 +2222,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -2141,8 +2334,32 @@
                     }
                 }
             ],
-            "outputsClass": [],
+            "outputsClass": [
+                {
+                    "name": "removeRow",
+                    "defaultValue": "new EventEmitter<void>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 43,
+                    "type": "EventEmitter<void>"
+                }
+            ],
             "propertiesClass": [
+                {
+                    "name": "selectReference",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NgSelectComponent",
+                    "optional": false,
+                    "description": "",
+                    "line": 21,
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "'select', {static: false}"
+                        }
+                    ]
+                },
                 {
                     "name": "customFormControl",
                     "defaultValue": "false",
@@ -2151,7 +2368,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2164,7 +2381,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2176,7 +2393,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2188,7 +2405,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2200,7 +2417,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2208,40 +2425,22 @@
             ],
             "methodsClass": [
                 {
-                    "name": "log",
-                    "args": [
-                        {
-                            "name": "select",
-                            "type": "",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 62,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "select",
-                            "type": "",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "ngOnInit",
+                    "name": "checkIfDefaultNeedsSetting",
                     "args": [],
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 95,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "handleOpen",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 121,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
@@ -2258,7 +2457,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 53,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2277,6 +2476,42 @@
                     }
                 },
                 {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 49,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 107,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "validateSelectionsExistInList",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 60,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -2289,7 +2524,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2320,7 +2555,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2351,7 +2586,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2389,7 +2624,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2425,11 +2660,11 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input, OnInit, ViewEncapsulation } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-select-input',\n  templateUrl: './select-input.component.html',\n  styleUrls: ['./select-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SelectInputComponent)\n    }\n  ],\n  encapsulation: ViewEncapsulation.None,\n})\nexport class SelectInputComponent extends CustomFormControl implements OnInit, ControlValueAccessor {\n\n  @Input() multiSelect: boolean = false;\n\n  @Input() selectOptions: any[] = []\n\n  // options = [\n  //   {\n  //     value: 'Test',\n  //     name: 'Test',\n  //   },\n  //   {\n  //     value: 'Test2',\n  //     name: 'Test2',\n  //   },\n  //   {\n  //     value: 'Test3',\n  //     name: 'Test4',\n  //   },\n  //   {\n  //     value: 'Test4',\n  //     name: 'Test4',\n  //   },\n  //   {\n  //     value: 'Test5',\n  //     name: 'Test5',\n  //   },\n  //   {\n  //     value: 'Test6',\n  //     name: 'Test6',\n  //   },\n  //   {\n  //     value: 'Test7',\n  //     name: 'Test7',\n  //   }\n  // ]\n  constructor() {\n    super();\n   }\n\n  ngOnInit(): void {\n\n  }\n\n  log(select) {\n    console.log(select);\n  }\n\n}\n",
+            "sourceCode": "import { Component, EventEmitter, forwardRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { DropdownPosition, NgSelectComponent } from '@ng-select/ng-select';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-select-input',\n  templateUrl: './select-input.component.html',\n  styleUrls: ['./select-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SelectInputComponent)\n    }\n  ],\n  encapsulation: ViewEncapsulation.None,\n})\nexport class SelectInputComponent extends CustomFormControl implements OnInit, OnChanges, ControlValueAccessor {\n\n  @ViewChild( 'select', { static: false }) selectReference: NgSelectComponent;\n\n\n\n  // Display based variables\n  @Input() bindValue: string = 'id';\n  @Input() bindLabel: string = 'description';\n  @Input() showRemoveIcon: boolean = false;\n\n  // Input method variables\n  @Input() multiSelect: boolean = false;\n  @Input() clearable: boolean = true;\n  @Input() useFirstValueAsDefault: boolean = false;\n\n\n  // Dropdown impacting variables\n  @Input() dropdownPosition: DropdownPosition = 'auto';\n  @Input() dropdownWidth: string;\n  @Input() selectOptions: any[] = [];\n\n\n  // Outputs\n  @Output() removeRow: EventEmitter<void> = new EventEmitter<void>();\n\n  constructor() {\n    super();\n  }\n\n  ngOnInit (): void {\n    this.checkIfDefaultNeedsSetting();\n  }\n\n  ngOnChanges(changes: SimpleChanges): void {\n    if ( changes.selectOptions ) {\n      this.validateSelectionsExistInList();\n      this.checkIfDefaultNeedsSetting();\n    }\n  }\n\n  validateSelectionsExistInList (): void {\n    if ( !this.formControl.value || !this.selectOptions || this.selectOptions?.length === 0 ) return;\n\n    const optionChecker = ( value ) => this.selectOptions.find(option => {\n      const optionValue = this.bindValue ? option[this.bindValue] : option;\n\n      console.log(optionValue);\n      console.log(value);\n      return JSON.stringify(optionValue) === JSON.stringify(value);\n    });\n\n    if ( this.multiSelect ) {\n\n      const filteredValue = this.formControl.value\n        .filter((value) =>{\n          console.log(value);\n          return optionChecker(value);\n        });\n\n        console.log(filteredValue);\n\n      if ( filteredValue.length !== this.formControl.value.length ) {\n        this.formControl.setValue(filteredValue);\n      }\n\n      return;\n    } else {\n      const validOption = optionChecker(this.formControl.value);\n\n      if ( !validOption ) {\n        this.formControl.setValue(undefined);\n      }\n    }\n  }\n\n  checkIfDefaultNeedsSetting (): void {\n    if (\n      this.useFirstValueAsDefault\n      && this.selectOptions?.length\n      && (!this.formControl.value || this.formControl.value.length === 0)\n    ) {\n      this.defaultValue = this.selectOptions[0];\n      this.value = this.multiSelect ? [this.defaultValue] : this.defaultValue;\n      this.formControl.setValue(this.value);\n    }\n  }\n\n  onBlur(): void {\n    this.focused = false;\n    const noValue = this.value === ''\n     || this.value === undefined\n     || this.value === null\n     || this.value?.length === 0;\n\n    if ( noValue && this.defaultValue !== undefined  ) {\n      this.value = this.multiSelect ? [this.defaultValue] : this.defaultValue;\n      this.formControl.setValue(this.value);\n    }\n  }\n\n\n  handleOpen(): void {\n    if ( !this.dropdownWidth ) {\n      return;\n    }\n\n    // Settimeout required so that the ng-select has rendered!\n    setTimeout(() => {\n      const dropdownPanel = document.getElementsByClassName('ng-dropdown-panel')[0] as any;\n      dropdownPanel.style.width = this.dropdownWidth;\n    });\n  }\n\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": "ng-select {\r\n  width: 100%;\r\n\r\n  .ng-select-container {\r\n    border: none !important;\r\n    outline: none !important;\r\n    box-shadow: none !important;\r\n    padding: 6px 0 6px 0;\r\n    background-color: transparent !important;\r\n  }\r\n\r\n  input,\r\n  .ng-value-label {\r\n    font-size: 15px;\r\n    line-height: 21px;;\r\n    font-family: 'Source Sans Pro', sans-serif;\r\n  }\r\n}\r\n\r\n.select.input {\r\n  padding: 1px 0 1px;\r\n}\r\n\r\n\r\n// Multi select styles\r\n\r\n\r\n.ng-select-multiple {\r\n  .ng-select-container {\r\n    padding: 0 !important;\r\n\r\n    .ng-value-container {\r\n      padding-top: 0 !important;\r\n\r\n      .ng-value {\r\n        margin: 2px 4px !important;\r\n        margin-top: 4px;\r\n        background-color: rgba( 0, 185, 255 , 0.5) !important;\r\n\r\n        .ng-value-label {\r\n          color: #333;\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n",
+                    "data": "@import \"@ng-select/ng-select/themes/default.theme.css\";\r\n\r\n.select-input-container {\r\n  display: flex;\r\n  width: 100%;\r\n  align-items: center;\r\n\r\n  > .select {\r\n    flex: 1;\r\n    width: 100%;\r\n  }\r\n\r\n  > .remove-row-icon {\r\n    border: none;\r\n    background-color: var(--error);\r\n    color: white;\r\n    margin-left: 8px;\r\n    border-radius: 4px;;\r\n    width: 35px;\r\n    height: 35px;\r\n    margin-bottom: 12px;\r\n    transition: all 0.175s ease-out;\r\n\r\n    &:hover {\r\n      cursor: pointer;\r\n      background-color: var(--error-300);\r\n    }\r\n  }\r\n}\r\nng-select {\r\n  width: 100%;\r\n  height: 35px;\r\n\r\n  .ng-select-container {\r\n    border: none !important;\r\n    outline: none !important;\r\n    box-shadow: none !important;\r\n    padding: 6px 0 6px 0;\r\n    background-color: transparent !important;\r\n  }\r\n\r\n  input,\r\n  .ng-value-label {\r\n    font-size: 15px;\r\n    line-height: 21px;\r\n    font-family: 'Roboto', sans-serif;\r\n  }\r\n}\r\n\r\n.select.input {\r\n  padding: 0;\r\n}\r\n\r\n\r\ndiv[role=\"combobox\"] {\r\n  height: 100% !important;\r\n  top: 0 !important;\r\n\r\n  > input {\r\n    height: 100%;\r\n    line-height: 21px;\r\n  }\r\n}\r\n\r\n\r\n// Multi select styles\r\n\r\n\r\n.ng-select-multiple {\r\n  .ng-select-container {\r\n    padding: 0 !important;\r\n    height: 35px !important;\r\n\r\n    .ng-value-container {\r\n      padding-top: 0 !important;\r\n\r\n      .ng-value {\r\n        margin: 2px 4px !important;\r\n        margin-top: 4px;\r\n        background-color: var(--form-input-color-600) !important;\r\n\r\n        .ng-value-icon.right {\r\n          border-left: solid 1px var(--form-input-color-300) !important;\r\n\r\n          &:hover {\r\n            background-color: var(--form-input-color-300);\r\n          }\r\n        }\r\n\r\n        .ng-value-label {\r\n          color: #333;\r\n        }\r\n      }\r\n    }\r\n  }\r\n}\r\n",
                     "styleUrl": "./select-input.component.scss"
                 }
             ],
@@ -2440,18 +2675,19 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "args": [],
-                "line": 22
+                "line": 43
             },
             "extends": "CustomFormControl",
             "implements": [
                 "OnInit",
+                "OnChanges",
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\"\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  >\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n\n  <section class=\"select input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <ng-select\n        #select\n        [ngModel]=\"formControl.value\"\n        (ngModelChange)=\"writeValue($event)\"\n        [items]=\"selectOptions\"\n        bindLabel=\"name\"\n        [bindValue]=\"undefined\"\n        [virtualScroll]=\"true\"\n        [disabled]=\"disabled\"\n        [multiple]=\"multiSelect\"\n        (blur)=\"onTouched(); focused = false\"\n        (focus)=\"onTouched(); focused = true\">\n\n        <ng-template ng-label-tmp let-item=\"item\" let-clear=\"clear\">\n          <span class=\"ng-value-label\">{{item.name}}</span>\n          <span class=\"ng-value-icon right\" (click)=\"clear(item)\" aria-hidden=\"true\">×</span>\n        </ng-template>\n      </ng-select>\n    </div>\n  </section>\n\n</section>\n\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\nclass=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <div class=\"select-input-container\">\n    <section class=\"select input\">\n\n      <p *ngIf=\"prefix\">\n        {{ prefix }}\n      </p>\n      <div class=\"input-wrapper\">\n        <ng-select\n          #select\n          [ngModel]=\"formControl.value\"\n          (ngModelChange)=\"writeValue($event)\"\n          [items]=\"selectOptions\"\n          [bindLabel]=\"bindLabel\"\n          [bindValue]=\"bindValue\"\n          [virtualScroll]=\"true\"\n          [disabled]=\"disabled\"\n          [multiple]=\"multiSelect\"\n          [clearable]=\"clearable\"\n          [dropdownPosition]=\"dropdownPosition\"\n          (open)=\"handleOpen()\"\n          (blur)=\"onBlur()\"\n          (focus)=\"formControl.markAsTouched(); focused = true\">\n\n          <ng-template ng-label-tmp let-item=\"item\" let-clear=\"clear\">\n            <span class=\"ng-value-label\">{{item[bindLabel]}}</span>\n            <span class=\"ng-value-icon right\" (click)=\"clear(item)\" aria-hidden=\"true\">×</span>\n          </ng-template>\n        </ng-select>\n      </div>\n\n\n    </section>\n    <button\n      *ngIf=\"showRemoveIcon\"\n      matTooltip=\"Remove row\"\n      class=\"remove-row-icon\"\n      (click)=\"removeRow.emit()\">\n      <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n    </button>\n  </div>\n\n\n</section>\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\nclass=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
         },
         {
             "name": "SliderInputComponent",
-            "id": "component-SliderInputComponent-4e1ddd61dc4f84268e188a59c7af5af757d8ed0f5699598153666c5b8279a9a0807ed61390cdf23e49c5cc99fb061599cc189b0cc3e74f2ec1c6c547b434778f",
+            "id": "component-SliderInputComponent-ff2ce8db5f283305dfb1733bbfbf210aba3ca93b1b700e498a56be0d1b0813a946f38856aab00a3a740a12df689a1e19138fcbd2509510d4a67e6aef46d066ad",
             "file": "src/app/components/slider-input/slider-input.component.ts",
             "encapsulation": [
                 "ViewEncapsulation.None"
@@ -2507,8 +2743,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -2628,7 +2875,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2641,7 +2888,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2653,7 +2900,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2665,7 +2912,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2677,7 +2924,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -2697,7 +2944,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2716,6 +2963,32 @@
                     }
                 },
                 {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 37,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -2728,7 +3001,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2759,7 +3032,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2790,7 +3063,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2828,7 +3101,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2864,7 +3137,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';\nimport { NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-slider-input',\n  templateUrl: './slider-input.component.html',\n  styleUrls: ['./slider-input.component.scss'],\n  encapsulation: ViewEncapsulation.None,\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SliderInputComponent )\n    }\n  ]\n})\nexport class SliderInputComponent extends CustomFormControl {\n\n\n  @Input() min: number = 0;\n\n  @Input() max: number = 100;\n\n  @Input() steps: number = 1;\n\n  inputValue: number = this.formControl.value || 0;\n\n  constructor() {\n    super();\n  }\n\n\n}\n",
+            "sourceCode": "import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';\nimport { NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-slider-input',\n  templateUrl: './slider-input.component.html',\n  styleUrls: ['./slider-input.component.scss'],\n  encapsulation: ViewEncapsulation.None,\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SliderInputComponent )\n    }\n  ]\n})\nexport class SliderInputComponent extends CustomFormControl {\n\n\n  @Input() min: number = 0;\n\n  @Input() max: number = 100;\n\n  @Input() steps: number = 1;\n\n  inputValue: number = this.formControl.value || 0;\n\n  constructor() {\n    super();\n  }\n}\n\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -2882,7 +3155,7 @@
                 "line": 27
             },
             "extends": "CustomFormControl",
-            "templateData": "<section\n  class=\"form-input app-slider-input\"\n  [class.disabled]=\"disabled\"\n  [class.full-selection]=\"inputValue === max\"\n  [class.no-selection]=\"inputValue === min\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused && !disabled\">\n\n  <label *ngIf=\"showLabel\" for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <mat-slider\n        #slider\n        class=\"custom-mat-slider\"\n        [disabled]=\"disabled\"\n        [formControl]=\"formControl\"\n        [min]=\"min\"\n        [max]=\"max\"\n        [step]=\"steps\"\n        [tickInterval]=\"10\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"focused = false;\"\n        (input)=\"inputValue = $event.value\"\n        (change)=\"writeValue($event.value, true); slider.blur()\">\n      </mat-slider>\n      <!-- If you want to add labels etc to the bottom of the slider! -->\n      <ng-content></ng-content>\n    </div>\n  </section>\n\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n  <div class=\"data-item\">\n    <p>Slider value</p>\n    <p>{{ inputValue }}</p>\n  </div>\n</section>\n"
+            "templateData": "<section\n  class=\"form-input app-slider-input\"\n  [class.disabled]=\"disabled\"\n  [class.full-selection]=\"inputValue === max\"\n  [class.no-selection]=\"inputValue === min\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused && !disabled\">\n\n  <label *ngIf=\"showLabel\" for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <mat-slider\n        #slider\n        class=\"custom-mat-slider\"\n        [disabled]=\"disabled\"\n        [formControl]=\"formControl\"\n        [min]=\"min\"\n        [max]=\"max\"\n        [step]=\"steps\"\n        [tickInterval]=\"10\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onBlur()\"\n        (input)=\"inputValue = $event.value\"\n        (change)=\"writeValue($event.value, true); slider.blur()\">\n      </mat-slider>\n    </div>\n\n  </section>\n  <!-- If you want to add labels etc to the bottom of the slider! -->\n  <ng-content></ng-content>\n\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n  <div class=\"data-item\">\n    <p>Slider value</p>\n    <p>{{ inputValue }}</p>\n  </div>\n</section>\n"
         },
         {
             "name": "TextAreaComponent",
@@ -2913,8 +3186,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -3024,7 +3308,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3037,7 +3321,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3049,7 +3333,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3061,7 +3345,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3073,7 +3357,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3088,7 +3372,10 @@
                     "typeParameters": [],
                     "line": 23,
                     "deprecated": false,
-                    "deprecationMessage": ""
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
                 },
                 {
                     "name": "ngOnChanges",
@@ -3103,7 +3390,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3122,6 +3409,19 @@
                     }
                 },
                 {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -3134,7 +3434,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3165,7 +3465,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3196,7 +3496,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3234,7 +3534,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3274,7 +3574,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": "textarea {\r\n  width: 100%;\r\n  border: none;\r\n  font-family: 'Source Sans Pro', sans-serif;\r\n\r\n  outline: none;\r\n  color: black;\r\n  line-height: 24px;\r\n  font-size: 18px;\r\n  resize: vertical;\r\n  min-height: 60px;\r\n\r\n}\r\n",
+                    "data": "textarea {\r\n  width: 100%;\r\n  border: none;\r\n  font-family: 'Roboto', sans-serif;\r\n  outline: none;\r\n  color: black;\r\n  line-height: 24px;\r\n  font-size: 18px;\r\n  resize: vertical;\r\n  min-height: 60px;\r\n\r\n}\r\n",
                     "styleUrl": "./text-area.component.scss"
                 }
             ],
@@ -3292,7 +3592,7 @@
                 "OnInit",
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <textarea\n        #input\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true;\"\n        (blur)=\"onTouched(); focused = false\">\n      </textarea>\n    </div>\n  </section>\n\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <textarea\n        #input\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true;\"\n        (blur)=\"onBlur()\">\n      </textarea>\n    </div>\n  </section>\n\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
         },
         {
             "name": "TextInputComponent",
@@ -3323,8 +3623,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -3434,7 +3745,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3447,7 +3758,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3459,7 +3770,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3471,7 +3782,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3483,7 +3794,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3503,7 +3814,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3522,6 +3833,32 @@
                     }
                 },
                 {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 37,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -3534,7 +3871,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3565,7 +3902,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3596,7 +3933,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3634,7 +3971,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3691,7 +4028,7 @@
             "implements": [
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onTouched(); focused = false\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onBlur()\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
         },
         {
             "name": "ToggleSlideComponent",
@@ -3722,8 +4059,19 @@
                     "defaultValue": "false",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 23,
+                    "line": 25,
                     "type": "boolean",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 23,
+                    "type": "any",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -3833,7 +4181,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 31,
+                    "line": 33,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3846,7 +4194,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 27,
+                    "line": 29,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3858,7 +4206,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 27,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3870,7 +4218,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "",
-                    "line": 33,
+                    "line": 35,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3882,7 +4230,7 @@
                     "type": "any",
                     "optional": false,
                     "description": "",
-                    "line": 29,
+                    "line": 31,
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
@@ -3897,7 +4245,10 @@
                     "typeParameters": [],
                     "line": 23,
                     "deprecated": false,
-                    "deprecationMessage": ""
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
                 },
                 {
                     "name": "ngOnChanges",
@@ -3912,7 +4263,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 35,
+                    "line": 43,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3931,6 +4282,19 @@
                     }
                 },
                 {
+                    "name": "onBlur",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 74,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
+                {
                     "name": "registerOnChange",
                     "args": [
                         {
@@ -3943,7 +4307,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 58,
+                    "line": 66,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -3974,7 +4338,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 62,
+                    "line": 70,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -4005,7 +4369,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 66,
+                    "line": 87,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -4043,7 +4407,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 41,
+                    "line": 49,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -4308,13 +4672,13 @@
         },
         {
             "name": "SelectInputModule",
-            "id": "module-SelectInputModule-a0b41773e10530771e95eac255ded5d7b13515fbf001185a099063bccdb98a2fb3e80aede5e6f4c0338987b5875ada2740eb77eb7c1c787c6f55ba28d9892f06",
+            "id": "module-SelectInputModule-d4ba0b0a01578a8c5678dbc3cfa41f8f78a38a498e037ddd3546786ca86e9dfca92c90615fe19c27c599e69aaf50dd29c36e681224d153b5a9200156e671ae35",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/components/select-input/select-input.module.ts",
             "methods": [],
-            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { NgSelectModule } from '@ng-select/ng-select';\nimport { SelectInputComponent } from './select-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    SelectInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    NgSelectModule\n  ],\n  exports: [\n    SelectInputComponent,\n  ]\n})\nexport class SelectInputModule { }\n",
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { MatTooltipModule } from '@angular/material/tooltip';\nimport { NgSelectModule } from '@ng-select/ng-select';\nimport { SelectInputComponent } from './select-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    SelectInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    NgSelectModule,\n    MatTooltipModule,\n  ],\n  exports: [\n    SelectInputComponent,\n  ]\n})\nexport class SelectInputModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -4543,7 +4907,7 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/date-picker.stories.ts",
+                "file": "src/stories/number-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4553,7 +4917,7 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/date-picker.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4598,6 +4962,46 @@
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "DefaultValue",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "DefaultValue",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "defaultvaluecontrol",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl()"
+            },
+            {
+                "name": "defaultValueFormControl",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl()"
             },
             {
                 "name": "Disabled",
@@ -4673,6 +5077,16 @@
                 "name": "Error",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Error",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -4713,6 +5127,16 @@
                 "name": "errorInput",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl({ name: 'Hello' }, Validators.compose([Validators.required]))"
+            },
+            {
+                "name": "errorInput",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -4743,7 +5167,7 @@
                 "name": "fieldsToNotIncludeOptions",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/date-picker.stories.ts",
+                "file": "src/stories/number-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4753,7 +5177,7 @@
                 "name": "fieldsToNotIncludeOptions",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/date-picker.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4820,10 +5244,90 @@
                 "defaultValue": "Template.bind({})"
             },
             {
-                "name": "OnBlur",
+                "name": "HardCodedDropdownPosition",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/date-picker.stories.ts",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "invalidSelection",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl([{ name: 'Random'}, { name: 'Hello' }])"
+            },
+            {
+                "name": "invalidSelectionWithDelay",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl([{ name: 'Random'}, { name: 'Hello' }])"
+            },
+            {
+                "name": "LargeListSlowLoad",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "largeSelectOptions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "[]",
+                "defaultValue": "[]"
+            },
+            {
+                "name": "MultiSelect",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "MultiSelectDisabled",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "MultiSelectPreSelected",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "NonClearable",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4834,6 +5338,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/number-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "OnBlur",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-picker.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -4900,6 +5414,16 @@
                 "defaultValue": "Template.bind({})"
             },
             {
+                "name": "RemoveRow",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
                 "name": "require",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -4909,24 +5433,24 @@
                 "type": "literal type"
             },
             {
-                "name": "SegmentInformation",
+                "name": "SetDropdownWidth",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/app/app.component.ts",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "type": "any",
-                "defaultValue": "{}"
+                "type": "",
+                "defaultValue": "Template.bind({})"
             },
             {
-                "name": "SegmentTracking",
+                "name": "SliderWithNgContent",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/app/app.component.ts",
+                "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "type": "object",
-                "defaultValue": "{\n  _trackSegmentEvent: (category, action, extraData) => {\n\n    if( SegmentInformation.trackingContext?.trackingEnabled ) {\n      return;\n    }\n\n    if (category && action && window.analytics) {\n      window.analytics.track(\n        `${category} ${action}`,\n        { ...SegmentTracking._mapToEventMetaData(SegmentInformation.trackingContext),\n          ...keysToSnake(extraData) }\n        );\n    }\n  },\n  _mapToEventMetaData: (context: UsageTrackingContext) => {\n    return {\n      userId: context.userId,\n      client: context.client,\n      environment: context.environment,\n      app: {\n        version: context.version,\n        name: context.name,\n      },\n    }\n  },\n  _dashboard: {\n    tileExpanded: ( data ) => {\n      SegmentTracking._trackSegmentEvent('Dashboard', 'Tile expanded', data);\n    }\n  },\n  // Gemeric functions that can be called / added\n  pageLoded: ( pageName: string ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageLoad', {});\n  },\n\n  // Others may be\n  pageError: ( pageName ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageError', {});\n  },\n  pagePartialLoad: (pageName) => {\n\n  },\n  dashboardTileExpanded: (data) => {\n\n  }\n}"
+                "type": "",
+                "defaultValue": "(args) => ({\r\n  props: args,\r\n  template: `<app-slider-input\r\n    label=\"Form slider\">\r\n    <div style=\"display: flex; justify-content: space-between; width: 100%\">\r\n      <p>Label at start</p>\r\n      <p>Label at end</p>\r\n    </div>\r\n    </app-slider-input>`\r\n})"
             },
             {
                 "name": "Suffix",
@@ -4992,7 +5516,7 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/date-picker.stories.ts",
+                "file": "src/stories/number-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -5002,7 +5526,7 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/date-picker.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -5047,6 +5571,46 @@
                 "deprecationMessage": "",
                 "type": "Story",
                 "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "useFirstValueAsDefault",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "ValidateSelection",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "ValidateSelectionWithDelay",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "WiderDropdownWith",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "(args) => ({\r\n  props: args,\r\n  template: `<app-select-input\r\n  style=\"width: 400px\"\r\n  label=\"Select input\"\r\n  [disabled]=\"false\"\r\n  [bindValue]=\"undefined\"\r\n  [selectOptions]=\"[{ description: 'Hello' }]\"\r\n  dropdownWidth=\"800px\">\r\n</app-select-input>`\r\n})"
             }
         ],
         "functions": [],
@@ -5072,58 +5636,6 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "literal type"
-                }
-            ],
-            "src/stories/date-picker.stories.ts": [
-                {
-                    "name": "Default",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-picker.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "Disabled",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-picker.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "fieldsToNotIncludeOptions",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-picker.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
-                },
-                {
-                    "name": "OnBlur",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-picker.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "Template",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-picker.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "Story",
-                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
                 }
             ],
             "src/stories/number-input.stories.ts": [
@@ -5248,6 +5760,58 @@
                     "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
                 }
             ],
+            "src/stories/date-picker.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-picker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Disabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-picker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-picker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "OnBlur",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-picker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-picker.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                }
+            ],
             "src/stories/select-input.stories.ts": [
                 {
                     "name": "Default",
@@ -5260,6 +5824,46 @@
                     "defaultValue": "Template.bind({})"
                 },
                 {
+                    "name": "DefaultValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "defaultValueFormControl",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormControl()"
+                },
+                {
+                    "name": "Error",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "errorInput",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormControl({ name: 'Hello' }, Validators.compose([Validators.required]))"
+                },
+                {
                     "name": "fieldsToNotIncludeOptions",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
@@ -5270,6 +5874,116 @@
                     "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
                 },
                 {
+                    "name": "HardCodedDropdownPosition",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "invalidSelection",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormControl([{ name: 'Random'}, { name: 'Hello' }])"
+                },
+                {
+                    "name": "invalidSelectionWithDelay",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormControl([{ name: 'Random'}, { name: 'Hello' }])"
+                },
+                {
+                    "name": "LargeListSlowLoad",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "largeSelectOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "[]",
+                    "defaultValue": "[]"
+                },
+                {
+                    "name": "MultiSelect",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "MultiSelectDisabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "MultiSelectPreSelected",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "NonClearable",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "RemoveRow",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "SetDropdownWidth",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
                     "name": "Template",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
@@ -5278,6 +5992,46 @@
                     "deprecationMessage": "",
                     "type": "Story",
                     "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                },
+                {
+                    "name": "useFirstValueAsDefault",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "ValidateSelection",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "ValidateSelectionWithDelay",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "WiderDropdownWith",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/select-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "(args) => ({\r\n  props: args,\r\n  template: `<app-select-input\r\n  style=\"width: 400px\"\r\n  label=\"Select input\"\r\n  [disabled]=\"false\"\r\n  [bindValue]=\"undefined\"\r\n  [selectOptions]=\"[{ description: 'Hello' }]\"\r\n  dropdownWidth=\"800px\">\r\n</app-select-input>`\r\n})"
                 }
             ],
             "src/stories/slider-control.stories.ts": [
@@ -5330,6 +6084,16 @@
                     "deprecationMessage": "",
                     "type": "",
                     "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "SliderWithNgContent",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/slider-control.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "(args) => ({\r\n  props: args,\r\n  template: `<app-slider-input\r\n    label=\"Form slider\">\r\n    <div style=\"display: flex; justify-content: space-between; width: 100%\">\r\n      <p>Label at start</p>\r\n      <p>Label at end</p>\r\n    </div>\r\n    </app-slider-input>`\r\n})"
                 },
                 {
                     "name": "Template",
@@ -5456,6 +6220,26 @@
                     "defaultValue": "Template.bind({})"
                 },
                 {
+                    "name": "DefaultValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/text-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "defaultvaluecontrol",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/text-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormControl()"
+                },
+                {
                     "name": "Disabled",
                     "ctype": "miscellaneous",
                     "subtype": "variable",
@@ -5569,28 +6353,6 @@
                     "type": "object",
                     "defaultValue": "{\n  production: false\n}"
                 }
-            ],
-            "src/app/app.component.ts": [
-                {
-                    "name": "SegmentInformation",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/app/app.component.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "defaultValue": "{}"
-                },
-                {
-                    "name": "SegmentTracking",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/app/app.component.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "object",
-                    "defaultValue": "{\n  _trackSegmentEvent: (category, action, extraData) => {\n\n    if( SegmentInformation.trackingContext?.trackingEnabled ) {\n      return;\n    }\n\n    if (category && action && window.analytics) {\n      window.analytics.track(\n        `${category} ${action}`,\n        { ...SegmentTracking._mapToEventMetaData(SegmentInformation.trackingContext),\n          ...keysToSnake(extraData) }\n        );\n    }\n  },\n  _mapToEventMetaData: (context: UsageTrackingContext) => {\n    return {\n      userId: context.userId,\n      client: context.client,\n      environment: context.environment,\n      app: {\n        version: context.version,\n        name: context.name,\n      },\n    }\n  },\n  _dashboard: {\n    tileExpanded: ( data ) => {\n      SegmentTracking._trackSegmentEvent('Dashboard', 'Tile expanded', data);\n    }\n  },\n  // Gemeric functions that can be called / added\n  pageLoded: ( pageName: string ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageLoad', {});\n  },\n\n  // Others may be\n  pageError: ( pageName ) => {\n    SegmentTracking._trackSegmentEvent(pageName, 'pageError', {});\n  },\n  pagePartialLoad: (pageName) => {\n\n  },\n  dashboardTileExpanded: (data) => {\n\n  }\n}"
-                }
             ]
         },
         "groupedFunctions": {},
@@ -5621,32 +6383,12 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/app.component.ts",
-                "type": "variable",
-                "linktype": "miscellaneous",
-                "linksubtype": "variable",
-                "name": "SegmentInformation",
-                "coveragePercent": 0,
-                "coverageCount": "0/1",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/app.component.ts",
-                "type": "variable",
-                "linktype": "miscellaneous",
-                "linksubtype": "variable",
-                "name": "SegmentTracking",
-                "coveragePercent": 0,
-                "coverageCount": "0/1",
-                "status": "low"
-            },
-            {
                 "filePath": "src/app/components/base/base-form-input.ts",
                 "type": "directive",
                 "linktype": "directive",
                 "name": "CustomFormControl",
                 "coveragePercent": 0,
-                "coverageCount": "0/20",
+                "coverageCount": "0/23",
                 "status": "low"
             },
             {
@@ -5655,7 +6397,7 @@
                 "linktype": "component",
                 "name": "DatePickerComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/22",
+                "coverageCount": "0/24",
                 "status": "low"
             },
             {
@@ -5664,7 +6406,7 @@
                 "linktype": "component",
                 "name": "DateRangeInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/28",
+                "coverageCount": "0/30",
                 "status": "low"
             },
             {
@@ -5673,7 +6415,7 @@
                 "linktype": "component",
                 "name": "NumberInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/24",
+                "coverageCount": "0/27",
                 "status": "low"
             },
             {
@@ -5682,7 +6424,7 @@
                 "linktype": "component",
                 "name": "SelectInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/25",
+                "coverageCount": "0/38",
                 "status": "low"
             },
             {
@@ -5691,7 +6433,7 @@
                 "linktype": "component",
                 "name": "SliderInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/25",
+                "coverageCount": "0/28",
                 "status": "low"
             },
             {
@@ -5700,7 +6442,7 @@
                 "linktype": "component",
                 "name": "TextAreaComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/22",
+                "coverageCount": "0/24",
                 "status": "low"
             },
             {
@@ -5709,7 +6451,7 @@
                 "linktype": "component",
                 "name": "TextInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/21",
+                "coverageCount": "0/24",
                 "status": "low"
             },
             {
@@ -5718,7 +6460,7 @@
                 "linktype": "component",
                 "name": "ToggleSlideComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/22",
+                "coverageCount": "0/24",
                 "status": "low"
             },
             {
@@ -5926,6 +6668,46 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
+                "name": "DefaultValue",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "defaultValueFormControl",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Error",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "errorInput",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
                 "name": "fieldsToNotIncludeOptions",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
@@ -5936,7 +6718,157 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
+                "name": "HardCodedDropdownPosition",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "invalidSelection",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "invalidSelectionWithDelay",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "LargeListSlowLoad",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "largeSelectOptions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "MultiSelect",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "MultiSelectDisabled",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "MultiSelectPreSelected",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "NonClearable",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "RemoveRow",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "SetDropdownWidth",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
                 "name": "Template",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "useFirstValueAsDefault",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "ValidateSelection",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "ValidateSelectionWithDelay",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/select-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "WiderDropdownWith",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
@@ -5987,6 +6919,16 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "fieldsToNotIncludeOptions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/slider-control.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "SliderWithNgContent",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
@@ -6107,6 +7049,26 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/text-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "DefaultValue",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/text-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "defaultvaluecontrol",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"

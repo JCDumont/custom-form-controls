@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { moduleMetadata, Story } from '@storybook/angular';
 import { SelectInputComponent } from 'src/app/components/select-input/select-input.component';
@@ -22,6 +24,9 @@ export default {
   component: SelectInputComponent,
   argTypes: {
     label: {
+      control: { type: 'text' }
+    },
+    bindValue: {
       control: { type: 'text' }
     },
     suffix: {
@@ -52,10 +57,12 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [
+        BrowserAnimationsModule,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
         NgSelectModule,
+        MatTooltipModule,
       ]
     })
   ],
@@ -70,12 +77,13 @@ Default.args = {
   label: 'Select input',
   debug: true,
   formControl: new FormControl(null),
+  bindLabel: 'name',
+  bindValue: undefined,
   selectOptions: [{ name: 'Hello' }, { name: 'Test'}, { name: 'Storybook'} ]
 }
 
 
 const errorInput =  new FormControl({ name: 'Hello' }, Validators.compose([Validators.required]));
-
 export const Error = Template.bind({});
 Error.args = {
   ...Default.args,
@@ -137,45 +145,58 @@ MultiSelectPreSelected.args = {
   formControl: new FormControl([{name: 'Test'}, { name: 'Storybook'}])
 }
 
+export const RemoveRow = Template.bind({});
+RemoveRow.args = {
+  ...Default.args,
+  multiSelect: true,
+  showRemoveIcon: true,
+  formControl: new FormControl([{name: 'Test'}, { name: 'Storybook'}])
+}
+
 export const WiderDropdownWith = (args) => ({
   props: args,
   template: `<app-select-input
   style="width: 400px"
   label="Select input"
   [disabled]="false"
-  [selectOptions]="[{ name: 'Hello' }]"
+  [bindValue]="undefined"
+  [selectOptions]="[{ description: 'Hello' }]"
   dropdownWidth="800px">
 </app-select-input>`
-})
+});
 
+const defaultValueFormControl = new FormControl();
+export const DefaultValue = Template.bind({});
+DefaultValue.args = {
+  ...Default.args,
+  multiSelect: true,
+  showRemoveIcon: true,
+  bindValue: undefined,
+  defaultValue: [{ name: 'Test' }],
+  formControl: defaultValueFormControl
+}
 
-// export const OnBlur = Template.bind({});
-// OnBlur.args = {
-//   ...Default.args,
-//   formControl: new FormControl('Updates on blur', { updateOn: 'blur' }),
-// }
+export const useFirstValueAsDefault = Template.bind({});
+useFirstValueAsDefault.args = {
+  ...Default.args,
+  multiSelect: true,
+  useFirstValueAsDefault: true,
+  formControl: defaultValueFormControl
+}
 
-// export const Prefix = Template.bind({});
-// Prefix.args = {
-//   ...Default.args,
-//   prefix: 'Prefix!: '
-// }
+export const tooltipDisplay = Template.bind({});
+tooltipDisplay.args = {
+  ...Default.args,
+  dropdownWidth: '200px',
+  selectOptions: [{ name: 'tes' }, { name: 'Super long name in here with lots of fun information that will overflow'}, { name: 'Storybook'} ]
+}
 
-// export const Suffix = Template.bind({});
-// Suffix.args = {
-//   ...Default.args,
-//   suffix: '% amount of stuff'
-// }
+const invalidSelection = new FormControl([{ name: 'Random'}, { name: 'Hello' }]);
+export const ValidateSelection = Template.bind({});
+ValidateSelection.args = {
+  ...Default.args,
+  multiSelect: true,
+  useFirstValueAsDefault: true,
+  formControl: invalidSelection
+}
 
-// export const SuffixWithLongInput = Template.bind({});
-// SuffixWithLongInput.args = {
-//   ...Default.args,
-//   formControl: new FormControl('This is a a super long bit of text that will usually overflow the container showing the impact that overflowing text will have'),
-//   suffix: '% amount of stuff'
-// }
-
-// export const Disabled = Template.bind({});
-// Disabled.args = {
-//   ...Default.args,
-//   disabled: true,
-// }

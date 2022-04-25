@@ -1,8 +1,8 @@
-import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl } from '@angular/forms';
 
 @Directive()
-export class CustomFormControl implements OnChanges, ControlValueAccessor {
+export class CustomFormControl implements OnInit, OnChanges, ControlValueAccessor {
 
   @Input() formControl: AbstractControl = new FormControl();
 
@@ -12,17 +12,29 @@ export class CustomFormControl implements OnChanges, ControlValueAccessor {
 
   @Input() fieldDisabledOverride: boolean = false; // This overrides disabled state
 
-  @Input() prefix;
+  @Input() prefix: string;
 
-  @Input() suffix;
+  @Input() suffix: string;
 
   @Input() showLabel: boolean = true;
 
   @Input() submitAttempt: boolean = false;
 
+  @Input() defaultValue: any;
+
+  @Input() customErrorMessages: Record<string, string | (() => string)>
+
   @Input() debug: boolean = false; // Only to be used in dev / storybook
 
-  onChange
+  onChange: (value: any) => void;
+
+  onTouched: () => void;
+
+  tooltipEnabled: boolean = false;
+
+  showToolTip: (containerElement: HTMLElement, textElement: HTMLElement) => void = (containterElement, textElement) => {
+    this.tooltipEnabled = containterElement.offsetWidth > ( textElement.offsetWidth - 41 )
+  }
 
   focused: boolean = false;
 
@@ -30,7 +42,12 @@ export class CustomFormControl implements OnChanges, ControlValueAccessor {
 
   customFormControl: boolean = false;
 
-  onTouched: () => void;
+
+  ngOnInit (): void {
+    if ( !this.formControl.value && this.defaultValue !== undefined  ) {
+      this.formControl.setValue(this.defaultValue, { emitEvent: false });
+    }
+  }
 
   ngOnChanges ( changes: SimpleChanges): void {
     if ( changes.formControl ) {
@@ -61,6 +78,19 @@ export class CustomFormControl implements OnChanges, ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  onBlur(): void {
+    this.focused = false;
+    const noValue = this.value === ''
+     || this.value === undefined
+     || this.value === null
+     || this.value?.length === 0;
+
+    if ( noValue && this.defaultValue !== undefined  ) {
+      this.value = JSON.parse(JSON.stringify(this.defaultValue));
+      this.formControl.setValue(this.value);
+    }
   }
 
   setDisabledState(isDisabled: boolean): void {
