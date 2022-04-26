@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';
+import { Component, forwardRef, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomFormControl } from 'src/app/components/base/base-form-input';
 
@@ -15,7 +15,7 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
     }
   ]
 })
-export class SliderInputComponent extends CustomFormControl {
+export class SliderInputComponent extends CustomFormControl implements OnChanges {
 
 
   @Input() min: number = 0;
@@ -28,6 +28,14 @@ export class SliderInputComponent extends CustomFormControl {
 
   constructor() {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    super.ngOnChanges(changes);
+
+    if ( changes.formControl ) {
+      this.inputValue = this.formControl.value;
+    }
   }
 }
 

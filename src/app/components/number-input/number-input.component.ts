@@ -16,14 +16,14 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
 })
 export class NumberInputComponent extends CustomFormControl implements ControlValueAccessor {
 
-  @Input() format: string;
+  @Input() numberFormat: string;
 
   constructor() {
     super();
   }
 
   writeValue( value: any, inputChange: boolean = false ): void {
-    const decimalMax = this.format?.substring(1, this.format?.length);
+    const decimalMax = this.numberFormat?.substring(1, this.numberFormat?.length);
 
     if ( decimalMax ) {
       value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));
@@ -40,7 +40,7 @@ export class NumberInputComponent extends CustomFormControl implements ControlVa
   }
 
   checkFormat(): void {
-    const decimalMax = this.format?.substring(1, this.format.length);
+    const decimalMax = this.numberFormat?.substring(1, this.numberFormat.length);
 
     if ( this.value === '' || !this.value && this.defaultValue ) {
       this.value = this.defaultValue;

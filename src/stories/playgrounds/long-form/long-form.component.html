@@ -1,0 +1,81 @@
+
+
+<section class="form-element-input">
+  <app-number-input
+  style="max-width: 768px; margin: 0 auto;"
+  label="Set input highligh colour"
+    [(ngModel)]="formInputColour"
+    (ngModelChange)="updateFormInputColour($event)">
+  </app-number-input>
+</section>
+<form [formGroup]="form">
+
+  <app-text-input
+    label="Basic text input"
+    [formControl]="form.get('textInput')">
+  </app-text-input>
+
+  <app-slider-input
+    label="Slider input!"
+    [formControl]="form.get('slider')">
+  </app-slider-input>
+
+  <app-text-input
+    label="Text update on blur"
+    [formControl]="form.get('textInputOnBlur')">
+  </app-text-input>
+
+  <app-text-input
+    label="Text with minimum length(5)"
+    [formControl]="form.get('validatedText')">
+  </app-text-input>
+
+  <app-number-input
+    label="Basic number input"
+    [formControl]="form.get('numberInput')">
+  </app-number-input>
+
+  <app-number-input
+    label="Number input on blur"
+    numberFormat="C2"
+    [formControl]="form.get('numberInputOnBlur')">
+  </app-number-input>
+
+  <app-number-input
+    label="Number with format"
+    numberFormat="C3"
+    [formControl]="form.get('numberWithFormat')">
+  </app-number-input>
+
+  <app-number-input
+    label="Number with suffix"
+    numberFormat="C3"
+    suffix="Exciting end item"
+    [formControl]="form.get('numberWithSuffix')">
+  </app-number-input>
+
+  <app-number-input
+    label="Number with prefix"
+    numberFormat="C2"
+    prefix="GBP"
+    [formControl]="form.get('numberWithPrefix')">
+  </app-number-input>
+
+  <app-text-area
+    label="Text area"
+    [formControl]="form.get('textArea')">
+  </app-text-area>
+
+  <app-text-area
+    label="Text area on blur"
+    [formControl]="form.get('textAreaOnBlur')">
+  </app-text-area>
+
+  <app-new-date-range-input
+    label="Date range selection"
+    [formControl]="form.get('dateRange')">
+  </app-new-date-range-input>
+</form>
+
+
+<pre>{{ form.value | json }}</pre>

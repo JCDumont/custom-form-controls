@@ -166,8 +166,12 @@ export class NewDateRangeInputComponent extends CustomFormControl implements OnC
     date.setFullYear(year);
     date.setHours(0, 0, 0, 0);
 
-    this.formControl.get(area).setValue(moment(date).utc());
-    this.writeValue(this.formControl.value, true);
+    const updatedValue = {
+      ...this.formControl.getRawValue(),
+      [area]: moment(date).utc(),
+    }
+    // this.formControl.get(area).setValue(moment(date).utc(), { emitEvent: false });
+    this.writeValue(updatedValue);
   }
 
   validateDateSelection ( dateRange ): void {

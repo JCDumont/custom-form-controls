@@ -1,7 +1,278 @@
 {
     "pipes": [],
     "interfaces": [],
-    "injectables": [],
+    "injectables": [
+        {
+            "name": "FiveDayRangeSelectionStrategy",
+            "id": "injectable-FiveDayRangeSelectionStrategy-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
+            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "createPreview",
+                    "args": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 45,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "activeDate",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "createRange",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 49,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "modifierKind": [
+                        121
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "selectionFinished",
+                    "args": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "DateRange<D>",
+                    "typeParameters": [],
+                    "line": 40,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "date",
+                            "type": "D | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Component, forwardRef, Injectable, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';\nimport { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { DateAdapter } from '@angular/material/core';\nimport { DateRange, MatDateRangePicker, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\nimport * as moment from 'moment';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Injectable()\nexport class SelectedDateState {\n  dateValue: any = {};\n\n  selectedInput: 'start' | 'end' = 'start';\n\n  updateFormValue: ( value ) => void;\n\n  setSelectedInput ( area ): void {\n    this.selectedInput = area;\n  }\n\n  setUpdateFormValue( fn) {\n    this.updateFormValue = fn;\n  }\n  setDateValue ( dateValue ): void {\n    this.dateValue = {\n      start: dateValue.start ? moment(dateValue.start ) : undefined,\n      end: dateValue.end ? moment(dateValue.end) : undefined\n    }\n  }\n}\n\n\n@Injectable()\nexport class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\n\n  constructor(\n    private _dateAdapter: DateAdapter<D>,\n    private selectedDateState: SelectedDateState\n  ) {}\n\n  selectionFinished(date: D | null): DateRange<D> {\n    this.selectedDateState.updateFormValue?.(this.createRange(date));\n    return this.createRange(date);\n  }\n\n  createPreview(activeDate: D | null): DateRange<D> {\n    return this.createRange(activeDate);\n  }\n\n  private createRange (date: D | null): DateRange<D>  {\n\n    let { start, end } = this.selectedDateState.dateValue;\n\n    if( date ) {\n      if ( this.selectedDateState.selectedInput === 'start' ) {\n        if ( !end ) {\n          end = date;\n        }\n        return new DateRange<D>(date, end);\n      } else {\n        if ( !end ) {\n          start = date;\n        }\n        return new DateRange<D>(start, date);\n      }\n    }\n\n    return new DateRange<D>( start, end );\n  }\n}\n\n\n@Component({\n  selector: 'app-new-date-range-input',\n  templateUrl: './new-date-range-input.component.html',\n  styleUrls: ['./new-date-range-input.component.scss'],\n  providers: [\n    SelectedDateState,\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NewDateRangeInputComponent)\n    },\n    {\n      provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\n      useClass: FiveDayRangeSelectionStrategy,\n    },\n  ]\n})\nexport class NewDateRangeInputComponent extends CustomFormControl implements OnChanges, ControlValueAccessor {\n  readonly secondFormId: string = `${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`;\n\n  // Date range references\n  @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;\n  @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;\n\n  @Input() formControl: FormGroup = new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  });\n\n  get startControl (): FormControl {\n    return this.formControl.get('start') as FormControl;\n  }\n\n  get endControl (): FormControl {\n    return this.formControl.get('end') as FormControl;\n  }\n\n  secondInputFocus: boolean = false;\n\n  constructor(\n    private selectionStrategy: FiveDayRangeSelectionStrategy<DateRange<Date>>,\n    private selectedDateState: SelectedDateState,\n  ) {\n    super();\n    this.selectedDateState.setUpdateFormValue(this.handleDateRangeInputUpdate.bind(this));\n    this.stubUnusedFormGroupFunctions();\n  }\n\n  handleDateRangeInputUpdate ( dateRange ): void {\n    this.writeValue(dateRange)\n    this.validateDateSelection(dateRange);\n  }\n\n  stubUnusedFormGroupFunctions (): void {\n    const keysToStub = [\n      'registerOnChange',\n      'registerOnDisabledChange',\n      '_unregisterOnChange',\n      '_unregisterOnDisabledChange'\n     ];\n\n    keysToStub.forEach(\n      (key) => this.formControl[key] = () => {}\n    );\n  }\n\n  ngOnChanges ( changes: SimpleChanges): void {\n    if ( changes.formControl ) {\n      this.customFormControl = true;\n      this.stubUnusedFormGroupFunctions();\n    }\n  }\n\n  openInput ( area: 'start' | 'end', dateRangeReference ): void {\n    this.selectedDateState.setDateValue(this.formControl.getRawValue());\n    this.selectedDateState.setSelectedInput(area);\n\n    if ( this.formControl.get(area).disabled ) {\n      return;\n    }\n\n    dateRangeReference.open();\n  }\n\n  writtenInputUpdate(newDate, area): void {\n    if ( !moment(newDate, 'dd/MM/yyyy').isValid() ) {\n      return;\n    }\n\n    const [ days, month, year] = newDate.split('/');\n\n    const date = new Date();\n    date.setDate(days);\n    date.setMonth(month - 1);\n    date.setFullYear(year);\n    date.setHours(0, 0, 0, 0);\n\n    const updatedValue = {\n      ...this.formControl.getRawValue(),\n      [area]: moment(date).utc(),\n    }\n    // this.formControl.get(area).setValue(moment(date).utc(), { emitEvent: false });\n    this.writeValue(updatedValue);\n  }\n\n  validateDateSelection ( dateRange ): void {\n    if ( moment(dateRange.start).isSameOrBefore(dateRange.end)) {\n      return;\n    }\n\n    this.formControl.setErrors({ startAfterEnd: true });\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    this.value = value;\n\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\n      this.formControl.patchValue(value);\n    }\n\n    this.validateDateSelection(value);\n\n    // On want to trigger on change if it is not a form control\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "selectedDateState",
+                        "type": "SelectedDateState",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 33,
+                "jsdoctags": [
+                    {
+                        "name": "_dateAdapter",
+                        "type": "DateAdapter<D>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "selectedDateState",
+                        "type": "SelectedDateState",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "type": "injectable"
+        },
+        {
+            "name": "SelectedDateState",
+            "id": "injectable-SelectedDateState-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
+            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "properties": [
+                {
+                    "name": "dateValue",
+                    "defaultValue": "{}",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "any",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                },
+                {
+                    "name": "selectedInput",
+                    "defaultValue": "'start'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "\"start\" | \"end\"",
+                    "optional": false,
+                    "description": "",
+                    "line": 12
+                },
+                {
+                    "name": "updateFormValue",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "function",
+                    "optional": false,
+                    "description": "",
+                    "line": 14
+                }
+            ],
+            "methods": [
+                {
+                    "name": "setDateValue",
+                    "args": [
+                        {
+                            "name": "dateValue",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 23,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "dateValue",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setSelectedInput",
+                    "args": [
+                        {
+                            "name": "area",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 16,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "area",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setUpdateFormValue",
+                    "args": [
+                        {
+                            "name": "fn",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 20,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "fn",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Component, forwardRef, Injectable, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';\nimport { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { DateAdapter } from '@angular/material/core';\nimport { DateRange, MatDateRangePicker, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\nimport * as moment from 'moment';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Injectable()\nexport class SelectedDateState {\n  dateValue: any = {};\n\n  selectedInput: 'start' | 'end' = 'start';\n\n  updateFormValue: ( value ) => void;\n\n  setSelectedInput ( area ): void {\n    this.selectedInput = area;\n  }\n\n  setUpdateFormValue( fn) {\n    this.updateFormValue = fn;\n  }\n  setDateValue ( dateValue ): void {\n    this.dateValue = {\n      start: dateValue.start ? moment(dateValue.start ) : undefined,\n      end: dateValue.end ? moment(dateValue.end) : undefined\n    }\n  }\n}\n\n\n@Injectable()\nexport class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\n\n  constructor(\n    private _dateAdapter: DateAdapter<D>,\n    private selectedDateState: SelectedDateState\n  ) {}\n\n  selectionFinished(date: D | null): DateRange<D> {\n    this.selectedDateState.updateFormValue?.(this.createRange(date));\n    return this.createRange(date);\n  }\n\n  createPreview(activeDate: D | null): DateRange<D> {\n    return this.createRange(activeDate);\n  }\n\n  private createRange (date: D | null): DateRange<D>  {\n\n    let { start, end } = this.selectedDateState.dateValue;\n\n    if( date ) {\n      if ( this.selectedDateState.selectedInput === 'start' ) {\n        if ( !end ) {\n          end = date;\n        }\n        return new DateRange<D>(date, end);\n      } else {\n        if ( !end ) {\n          start = date;\n        }\n        return new DateRange<D>(start, date);\n      }\n    }\n\n    return new DateRange<D>( start, end );\n  }\n}\n\n\n@Component({\n  selector: 'app-new-date-range-input',\n  templateUrl: './new-date-range-input.component.html',\n  styleUrls: ['./new-date-range-input.component.scss'],\n  providers: [\n    SelectedDateState,\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NewDateRangeInputComponent)\n    },\n    {\n      provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\n      useClass: FiveDayRangeSelectionStrategy,\n    },\n  ]\n})\nexport class NewDateRangeInputComponent extends CustomFormControl implements OnChanges, ControlValueAccessor {\n  readonly secondFormId: string = `${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`;\n\n  // Date range references\n  @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;\n  @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;\n\n  @Input() formControl: FormGroup = new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  });\n\n  get startControl (): FormControl {\n    return this.formControl.get('start') as FormControl;\n  }\n\n  get endControl (): FormControl {\n    return this.formControl.get('end') as FormControl;\n  }\n\n  secondInputFocus: boolean = false;\n\n  constructor(\n    private selectionStrategy: FiveDayRangeSelectionStrategy<DateRange<Date>>,\n    private selectedDateState: SelectedDateState,\n  ) {\n    super();\n    this.selectedDateState.setUpdateFormValue(this.handleDateRangeInputUpdate.bind(this));\n    this.stubUnusedFormGroupFunctions();\n  }\n\n  handleDateRangeInputUpdate ( dateRange ): void {\n    this.writeValue(dateRange)\n    this.validateDateSelection(dateRange);\n  }\n\n  stubUnusedFormGroupFunctions (): void {\n    const keysToStub = [\n      'registerOnChange',\n      'registerOnDisabledChange',\n      '_unregisterOnChange',\n      '_unregisterOnDisabledChange'\n     ];\n\n    keysToStub.forEach(\n      (key) => this.formControl[key] = () => {}\n    );\n  }\n\n  ngOnChanges ( changes: SimpleChanges): void {\n    if ( changes.formControl ) {\n      this.customFormControl = true;\n      this.stubUnusedFormGroupFunctions();\n    }\n  }\n\n  openInput ( area: 'start' | 'end', dateRangeReference ): void {\n    this.selectedDateState.setDateValue(this.formControl.getRawValue());\n    this.selectedDateState.setSelectedInput(area);\n\n    if ( this.formControl.get(area).disabled ) {\n      return;\n    }\n\n    dateRangeReference.open();\n  }\n\n  writtenInputUpdate(newDate, area): void {\n    if ( !moment(newDate, 'dd/MM/yyyy').isValid() ) {\n      return;\n    }\n\n    const [ days, month, year] = newDate.split('/');\n\n    const date = new Date();\n    date.setDate(days);\n    date.setMonth(month - 1);\n    date.setFullYear(year);\n    date.setHours(0, 0, 0, 0);\n\n    const updatedValue = {\n      ...this.formControl.getRawValue(),\n      [area]: moment(date).utc(),\n    }\n    // this.formControl.get(area).setValue(moment(date).utc(), { emitEvent: false });\n    this.writeValue(updatedValue);\n  }\n\n  validateDateSelection ( dateRange ): void {\n    if ( moment(dateRange.start).isSameOrBefore(dateRange.end)) {\n      return;\n    }\n\n    this.formControl.setErrors({ startAfterEnd: true });\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    this.value = value;\n\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\n      this.formControl.patchValue(value);\n    }\n\n    this.validateDateSelection(value);\n\n    // On want to trigger on change if it is not a form control\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n}\n",
+            "type": "injectable"
+        }
+    ],
     "guards": [],
     "interceptors": [],
     "classes": [
@@ -1363,7 +1634,7 @@
                 "OnInit",
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        [id]=\"formId\"\n        matInput\n        [matDatepicker]=\"picker\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (dateInput)=\"writeValue($event.value, true)\"\n        (focus)=\"focused = true\"\n        (blur)=\"onTouched(); focused = false\">\n\n        <button\n          (click)=\"picker.open()\"\n          [disabled]=\"disabled\"\n          class=\"date-picker-icon\">\n          <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n        </button>\n\n    </div>\n\n    <mat-datepicker #picker></mat-datepicker>\n\n  </section>\n\n</section>\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        autocomplete=\"off\"\n        [id]=\"formId\"\n        matInput\n        [matDatepicker]=\"picker\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (dateInput)=\"writeValue($event.value, true)\"\n        (focus)=\"focused = true\"\n        (blur)=\"onTouched(); focused = false\">\n\n        <button\n          (click)=\"picker.open()\"\n          [disabled]=\"disabled\"\n          class=\"date-picker-icon\">\n          <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n        </button>\n\n    </div>\n\n    <mat-datepicker #picker></mat-datepicker>\n\n  </section>\n\n</section>\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
         },
         {
             "name": "DateRangeInputComponent",
@@ -1875,19 +2146,144 @@
             "templateData": "\n\nhello\n\n\n<!--\n  section\n  class=\"form-input\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n    <div class=\"input-wrapper\">\n\n      <div class=\"input-container\"\n      [class.disabled]=\"disabled\"\n      [class.focused]=\"input?.focused\">\n        <p>\n          From\n        </p>\n\n        <div class=\"input-wrapper\">\n          <input\n            #input\n            type=\"text\"\n            [ngModel]=\"value.start | date: 'dd/MM/yyyy'\"\n            (ngModelChange)=\"test()\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"focused = true\"\n            (blur)=\"focused = false\">\n\n            <mat-date-range-input\n              [formGroup]=\"controlsStart\"\n              [max]=\"value.end\"\n              style=\"opacity: 0; height: 0; width: 0;\"\n              [rangePicker]=\"picker\">\n              <input  (dateInput)=\"updateValue($event.value, 'start')\" formControlName=\"start\" matStartDate type=\"text\">\n              <input  formControlName=\"end\" matEndDate disabled readonly type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker #picker></mat-date-range-picker>\n\n             <button\n              (click)=\"picker.open()\"\n              [disabled]=\"disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n\n        </div>\n\n      </div>\n\n\n\n\n\n      <section class=\"input-container\"\n        [class.disabled]=\"disabled\"\n        [class.focused]=\"input2?.focused\">\n\n        <p>\n          To\n        </p>\n\n        <div class=\"input-wrapper\">\n\n          <input\n            #input2\n            type=\"text\"\n            [ngModel]=\"value.end | date : 'dd/MM/yyyy'\"\n            (ngModelChange)=\"test()\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"focused = true\"\n            (blur)=\"focused = false\">\n\n            <mat-date-range-input\n            [formGroup]=\"controlsEnd\"\n              [min]=\"value.start\"\n              style=\"opacity: 0;  height: 0; width: 0;\" [rangePicker]=\"picker2\">\n              <input formControlName=\"start\" matStartDate type=\"text\">\n              <input (dateInput)=\"updateValue($event.value, 'end')\" formControlName=\"end\" matEndDate type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker #picker2 ></mat-date-range-picker>\n\n            <button\n              (click)=\"picker2.open()\"\n              [disabled]=\"disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n\n        </div>\n\n      </section>\n\n\n      <section class=\"to\">\n        <p>\n          To\n        </p>\n\n        {{ value.end | date : 'dd/MM/yyyy' }}\n\n      <mat-date-range-input\n        [min]=\"value.start\"\n         style=\"opacity: 0; display: none\" [rangePicker]=\"picker2\">\n        <input  matStartDate type=\"text\">\n        <input  (dateChange)=\"updateValue($event.value, 'end')\" [value]=\"value.end\" matEndDate type=\"text\">\n      </mat-date-range-input>\n      <mat-date-range-picker #picker2 ></mat-date-range-picker>\n\n\n      </section>\n\n    </div>\n  </section>\n\n\n</!->\n\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n-->\n"
         },
         {
-            "name": "NewDateRangeInputComponent",
-            "id": "component-NewDateRangeInputComponent-ab59ee987b2298c427317d62505721edac5620d229a99d03bc0caf12feffeb2ab697db57a8d5f325b3de17e2d66b4d85ec902d06d678891429cb02659537515e",
-            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
-            "encapsulation": [
-                "ViewEncapsulation.None"
+            "name": "LongFormComponent",
+            "id": "component-LongFormComponent-5d24cced5d3e0774ff1da30eeb74856b47b3dea04315b37bf6e9d3fbd08a03f1b65dee0da4edbf63cbdf2d0d481bbccd54d779b980ef183b3faa37d787b72822",
+            "file": "src/stories/playgrounds/long-form/long-form.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-long-form",
+            "styleUrls": [
+                "./long-form.component.scss"
             ],
+            "styles": [],
+            "templateUrl": [
+                "./long-form.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "dateThing",
+                    "defaultValue": "new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  })",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 29
+                },
+                {
+                    "name": "form",
+                    "defaultValue": "new FormGroup({\n    textInput: new FormControl('Basic text input'),\n    textInputOnBlur: new FormControl('Updates on blur', { updateOn: 'blur'} ),\n    validatedText: new FormControl('Minimum length(5)', Validators.compose([Validators.minLength(5)]) ),\n    numberInput: new FormControl(5),\n    numberInputOnBlur: new FormControl('1.2345', { updateOn: 'blur' }),\n    numberWithFormat: new FormControl('5.342123'),\n    numberWithSuffix: new FormControl(1.23),\n    numberWithPrefix: new FormControl(4.56),\n    slider: new FormControl(10),\n    textArea: new FormControl('Nice text area'),\n    textAreaOnBlur: new FormControl('Text area on blur', { updateOn: 'blur' }),\n    dateRange: new FormGroup({\n      start: new FormControl(),\n      end: new FormControl(),\n    }),\n  })",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 11
+                },
+                {
+                    "name": "formInputColour",
+                    "defaultValue": "200",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "number",
+                    "optional": false,
+                    "description": "",
+                    "line": 45
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 35,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "updateFormInputColour",
+                    "args": [
+                        {
+                            "name": "number",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 47,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "number",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component, OnInit } from '@angular/core';\nimport { FormControl, FormGroup, Validators } from '@angular/forms';\n\n@Component({\n  selector: 'app-long-form',\n  templateUrl: './long-form.component.html',\n  styleUrls: ['./long-form.component.scss']\n})\nexport class LongFormComponent implements OnInit {\n\n  form = new FormGroup({\n    textInput: new FormControl('Basic text input'),\n    textInputOnBlur: new FormControl('Updates on blur', { updateOn: 'blur'} ),\n    validatedText: new FormControl('Minimum length(5)', Validators.compose([Validators.minLength(5)]) ),\n    numberInput: new FormControl(5),\n    numberInputOnBlur: new FormControl('1.2345', { updateOn: 'blur' }),\n    numberWithFormat: new FormControl('5.342123'),\n    numberWithSuffix: new FormControl(1.23),\n    numberWithPrefix: new FormControl(4.56),\n    slider: new FormControl(10),\n    textArea: new FormControl('Nice text area'),\n    textAreaOnBlur: new FormControl('Text area on blur', { updateOn: 'blur' }),\n    dateRange: new FormGroup({\n      start: new FormControl(),\n      end: new FormControl(),\n    }),\n  });\n\n  dateThing = new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  })\n  constructor() { }\n\n  ngOnInit(): void {\n\n    this.form.valueChanges\n      .subscribe({\n        next: (val) => {\n          console.log(val);\n        }\n      });\n  }\n\n  formInputColour = 200;\n\n  updateFormInputColour ( number ): void {\n    document.documentElement.style.setProperty('--hue', `${number}`);\n\n  }\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "form {\r\n  background: white;\r\n  box-shadow: 0 4px 4px 0 rgba( 0, 0, 0, 0.12);\r\n  margin: 12px auto;\r\n  padding: 12px;\r\n  width: 100%;\r\n  border-radius: 4px;\r\n  max-width: 760px;\r\n}\r\n",
+                    "styleUrl": "./long-form.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [],
+                "line": 32
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "\n\n<section class=\"form-element-input\">\n  <app-number-input\n  style=\"max-width: 768px; margin: 0 auto;\"\n  label=\"Set input highligh colour\"\n    [(ngModel)]=\"formInputColour\"\n    (ngModelChange)=\"updateFormInputColour($event)\">\n  </app-number-input>\n</section>\n<form [formGroup]=\"form\">\n\n  <app-text-input\n    label=\"Basic text input\"\n    [formControl]=\"form.get('textInput')\">\n  </app-text-input>\n\n  <app-slider-input\n    label=\"Slider input!\"\n    [formControl]=\"form.get('slider')\">\n  </app-slider-input>\n\n  <app-text-input\n    label=\"Text update on blur\"\n    [formControl]=\"form.get('textInputOnBlur')\">\n  </app-text-input>\n\n  <app-text-input\n    label=\"Text with minimum length(5)\"\n    [formControl]=\"form.get('validatedText')\">\n  </app-text-input>\n\n  <app-number-input\n    label=\"Basic number input\"\n    [formControl]=\"form.get('numberInput')\">\n  </app-number-input>\n\n  <app-number-input\n    label=\"Number input on blur\"\n    numberFormat=\"C2\"\n    [formControl]=\"form.get('numberInputOnBlur')\">\n  </app-number-input>\n\n  <app-number-input\n    label=\"Number with format\"\n    numberFormat=\"C3\"\n    [formControl]=\"form.get('numberWithFormat')\">\n  </app-number-input>\n\n  <app-number-input\n    label=\"Number with suffix\"\n    numberFormat=\"C3\"\n    suffix=\"Exciting end item\"\n    [formControl]=\"form.get('numberWithSuffix')\">\n  </app-number-input>\n\n  <app-number-input\n    label=\"Number with prefix\"\n    numberFormat=\"C2\"\n    prefix=\"GBP\"\n    [formControl]=\"form.get('numberWithPrefix')\">\n  </app-number-input>\n\n  <app-text-area\n    label=\"Text area\"\n    [formControl]=\"form.get('textArea')\">\n  </app-text-area>\n\n  <app-text-area\n    label=\"Text area on blur\"\n    [formControl]=\"form.get('textAreaOnBlur')\">\n  </app-text-area>\n\n  <app-new-date-range-input\n    label=\"Date range selection\"\n    [formControl]=\"form.get('dateRange')\">\n  </app-new-date-range-input>\n</form>\n\n\n<pre>{{ form.value | json }}</pre>\n"
+        },
+        {
+            "name": "NewDateRangeInputComponent",
+            "id": "component-NewDateRangeInputComponent-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
+            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "encapsulation": [],
             "entryComponents": [],
             "inputs": [],
             "outputs": [],
             "providers": [
                 {
+                    "name": "SelectedDateState"
+                },
+                {
                     "name": "{\n    provide: NG_VALUE_ACCESSOR, multi: true, useExisting: forwardRef(() => NewDateRangeInputComponent)\n}",
                     "type": "component"
+                },
+                {
+                    "name": "{\n    provide: MAT_DATE_RANGE_SELECTION_STRATEGY, useClass: FiveDayRangeSelectionStrategy,\n}"
                 }
             ],
             "selector": "app-new-date-range-input",
@@ -1900,6 +2296,18 @@
             ],
             "viewProviders": [],
             "inputsClass": [
+                {
+                    "name": "formControl",
+                    "defaultValue": "new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  })",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 96,
+                    "type": "FormGroup",
+                    "decorators": [],
+                    "inheritance": {
+                        "file": "CustomFormControl"
+                    }
+                },
                 {
                     "name": "customErrorMessages",
                     "deprecated": false,
@@ -1953,18 +2361,6 @@
                     "deprecationMessage": "",
                     "line": 15,
                     "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "formControl",
-                    "defaultValue": "new FormControl()",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 9,
-                    "type": "AbstractControl",
                     "decorators": [],
                     "inheritance": {
                         "file": "CustomFormControl"
@@ -2049,7 +2445,7 @@
                     "type": "MatDateRangePicker<any>",
                     "optional": false,
                     "description": "",
-                    "line": 26,
+                    "line": 94,
                     "decorators": [
                         {
                             "name": "ViewChild",
@@ -2065,7 +2461,7 @@
                     "type": "string",
                     "optional": false,
                     "description": "",
-                    "line": 22,
+                    "line": 90,
                     "modifierKind": [
                         144
                     ]
@@ -2078,7 +2474,7 @@
                     "type": "boolean",
                     "optional": false,
                     "description": "",
-                    "line": 36
+                    "line": 109
                 },
                 {
                     "name": "startDatePicker",
@@ -2087,7 +2483,7 @@
                     "type": "MatDateRangePicker<any>",
                     "optional": false,
                     "description": "",
-                    "line": 25,
+                    "line": 93,
                     "decorators": [
                         {
                             "name": "ViewChild",
@@ -2202,6 +2598,34 @@
             ],
             "methodsClass": [
                 {
+                    "name": "handleDateRangeInputUpdate",
+                    "args": [
+                        {
+                            "name": "dateRange",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 120,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "dateRange",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "ngOnChanges",
                     "args": [
                         {
@@ -2214,7 +2638,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 57,
+                    "line": 138,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2233,11 +2657,17 @@
                     }
                 },
                 {
-                    "name": "openEndDatePicker",
+                    "name": "openInput",
                     "args": [
                         {
-                            "name": "startDate",
-                            "type": "Moment",
+                            "name": "area",
+                            "type": "\"start\" | \"end\"",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "dateRangeReference",
+                            "type": "",
                             "deprecated": false,
                             "deprecationMessage": ""
                         }
@@ -2245,13 +2675,22 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 95,
+                    "line": 145,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
                         {
-                            "name": "startDate",
-                            "type": "Moment",
+                            "name": "area",
+                            "type": "\"start\" | \"end\"",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "dateRangeReference",
+                            "type": "",
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
@@ -2266,21 +2705,15 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 43,
+                    "line": 125,
                     "deprecated": false,
                     "deprecationMessage": ""
                 },
                 {
-                    "name": "updateValue",
+                    "name": "validateDateSelection",
                     "args": [
                         {
-                            "name": "event",
-                            "type": "",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        },
-                        {
-                            "name": "area",
+                            "name": "dateRange",
                             "type": "",
                             "deprecated": false,
                             "deprecationMessage": ""
@@ -2289,21 +2722,12 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 65,
+                    "line": 177,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
                         {
-                            "name": "event",
-                            "type": "",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        },
-                        {
-                            "name": "area",
+                            "name": "dateRange",
                             "type": "",
                             "deprecated": false,
                             "deprecationMessage": "",
@@ -2333,7 +2757,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 103,
+                    "line": 185,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -2360,6 +2784,49 @@
                     "inheritance": {
                         "file": "CustomFormControl"
                     }
+                },
+                {
+                    "name": "writtenInputUpdate",
+                    "args": [
+                        {
+                            "name": "newDate",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "area",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 156,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "newDate",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "area",
+                            "type": "",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
                 },
                 {
                     "name": "ngOnInit",
@@ -2488,11 +2955,11 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';\nimport { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { MatDateRangePicker } from '@angular/material/datepicker';\nimport * as moment from 'moment';\nimport { Moment } from 'moment';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-new-date-range-input',\n  templateUrl: './new-date-range-input.component.html',\n  styleUrls: ['./new-date-range-input.component.scss'],\n  encapsulation: ViewEncapsulation.None,\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NewDateRangeInputComponent)\n    }\n  ]\n})\nexport class NewDateRangeInputComponent extends CustomFormControl implements OnChanges, ControlValueAccessor {\n  readonly secondFormId: string = `${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`;\n\n  // Date range references\n  @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;\n  @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;\n\n  get startControl (): FormControl {\n    return this.formControl.get('start') as FormControl;\n  }\n\n  get endControl (): FormControl {\n    return this.formControl.get('end') as FormControl;\n  }\n\n  secondInputFocus: boolean = false;\n\n  constructor() {\n    super();\n    this.stubUnusedFormGroupFunctions();\n  }\n\n  stubUnusedFormGroupFunctions (): void {\n    const keysToStub = [\n      'registerOnChange',\n      'registerOnDisabledChange',\n      '_unregisterOnChange',\n      '_unregisterOnDisabledChange'\n     ];\n\n    keysToStub.forEach(\n      (key) => this.formControl[key] = () => {}\n    );\n  }\n  // Prevent errors on formgroup here\n\n  ngOnChanges ( changes: SimpleChanges): void {\n    if ( changes.formControl ) {\n      this.customFormControl = true;\n      this.stubUnusedFormGroupFunctions();\n    }\n  }\n\n\n  updateValue(event, area) {\n\n    console.log(event);\n    console.log(area);\n    console.log(this.formControl);\n\n    if ( area === 'start' || (area === 'end' && event) ) {\n      this.value = {\n        ...this.formControl.value,\n        [area]: event,\n      }\n    }\n\n    console.log(this.value);\n\n    if ( area === 'start' ) {\n\n      this.formControl.patchValue(this.value);\n\n      this.startDatePicker.close();\n      this.openEndDatePicker(event);\n    }\n\n\n\n    if ( this.value.end && this.value.start ) {\n      this.writeValue(this.value);\n    }\n  }\n\n  openEndDatePicker( startDate: Moment ): void {\n    this.endDatePicker.open();\n    this.endDatePicker.select(moment(startDate));\n    setTimeout(() => {\n      // this.endDatePicker._applyPendingSelection();\n    })\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    this.value = value;\n\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\n      this.formControl.patchValue(value, { emitEvent: false });\n   }\n\n    // On want to trigger on change if it is not a form control\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n}\n",
+            "sourceCode": "import { Component, forwardRef, Injectable, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';\nimport { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { DateAdapter } from '@angular/material/core';\nimport { DateRange, MatDateRangePicker, MatDateRangeSelectionStrategy, MAT_DATE_RANGE_SELECTION_STRATEGY } from '@angular/material/datepicker';\nimport * as moment from 'moment';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Injectable()\nexport class SelectedDateState {\n  dateValue: any = {};\n\n  selectedInput: 'start' | 'end' = 'start';\n\n  updateFormValue: ( value ) => void;\n\n  setSelectedInput ( area ): void {\n    this.selectedInput = area;\n  }\n\n  setUpdateFormValue( fn) {\n    this.updateFormValue = fn;\n  }\n  setDateValue ( dateValue ): void {\n    this.dateValue = {\n      start: dateValue.start ? moment(dateValue.start ) : undefined,\n      end: dateValue.end ? moment(dateValue.end) : undefined\n    }\n  }\n}\n\n\n@Injectable()\nexport class FiveDayRangeSelectionStrategy<D> implements MatDateRangeSelectionStrategy<D> {\n\n  constructor(\n    private _dateAdapter: DateAdapter<D>,\n    private selectedDateState: SelectedDateState\n  ) {}\n\n  selectionFinished(date: D | null): DateRange<D> {\n    this.selectedDateState.updateFormValue?.(this.createRange(date));\n    return this.createRange(date);\n  }\n\n  createPreview(activeDate: D | null): DateRange<D> {\n    return this.createRange(activeDate);\n  }\n\n  private createRange (date: D | null): DateRange<D>  {\n\n    let { start, end } = this.selectedDateState.dateValue;\n\n    if( date ) {\n      if ( this.selectedDateState.selectedInput === 'start' ) {\n        if ( !end ) {\n          end = date;\n        }\n        return new DateRange<D>(date, end);\n      } else {\n        if ( !end ) {\n          start = date;\n        }\n        return new DateRange<D>(start, date);\n      }\n    }\n\n    return new DateRange<D>( start, end );\n  }\n}\n\n\n@Component({\n  selector: 'app-new-date-range-input',\n  templateUrl: './new-date-range-input.component.html',\n  styleUrls: ['./new-date-range-input.component.scss'],\n  providers: [\n    SelectedDateState,\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NewDateRangeInputComponent)\n    },\n    {\n      provide: MAT_DATE_RANGE_SELECTION_STRATEGY,\n      useClass: FiveDayRangeSelectionStrategy,\n    },\n  ]\n})\nexport class NewDateRangeInputComponent extends CustomFormControl implements OnChanges, ControlValueAccessor {\n  readonly secondFormId: string = `${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`;\n\n  // Date range references\n  @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;\n  @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;\n\n  @Input() formControl: FormGroup = new FormGroup({\n    start: new FormControl(),\n    end: new FormControl(),\n  });\n\n  get startControl (): FormControl {\n    return this.formControl.get('start') as FormControl;\n  }\n\n  get endControl (): FormControl {\n    return this.formControl.get('end') as FormControl;\n  }\n\n  secondInputFocus: boolean = false;\n\n  constructor(\n    private selectionStrategy: FiveDayRangeSelectionStrategy<DateRange<Date>>,\n    private selectedDateState: SelectedDateState,\n  ) {\n    super();\n    this.selectedDateState.setUpdateFormValue(this.handleDateRangeInputUpdate.bind(this));\n    this.stubUnusedFormGroupFunctions();\n  }\n\n  handleDateRangeInputUpdate ( dateRange ): void {\n    this.writeValue(dateRange)\n    this.validateDateSelection(dateRange);\n  }\n\n  stubUnusedFormGroupFunctions (): void {\n    const keysToStub = [\n      'registerOnChange',\n      'registerOnDisabledChange',\n      '_unregisterOnChange',\n      '_unregisterOnDisabledChange'\n     ];\n\n    keysToStub.forEach(\n      (key) => this.formControl[key] = () => {}\n    );\n  }\n\n  ngOnChanges ( changes: SimpleChanges): void {\n    if ( changes.formControl ) {\n      this.customFormControl = true;\n      this.stubUnusedFormGroupFunctions();\n    }\n  }\n\n  openInput ( area: 'start' | 'end', dateRangeReference ): void {\n    this.selectedDateState.setDateValue(this.formControl.getRawValue());\n    this.selectedDateState.setSelectedInput(area);\n\n    if ( this.formControl.get(area).disabled ) {\n      return;\n    }\n\n    dateRangeReference.open();\n  }\n\n  writtenInputUpdate(newDate, area): void {\n    if ( !moment(newDate, 'dd/MM/yyyy').isValid() ) {\n      return;\n    }\n\n    const [ days, month, year] = newDate.split('/');\n\n    const date = new Date();\n    date.setDate(days);\n    date.setMonth(month - 1);\n    date.setFullYear(year);\n    date.setHours(0, 0, 0, 0);\n\n    const updatedValue = {\n      ...this.formControl.getRawValue(),\n      [area]: moment(date).utc(),\n    }\n    // this.formControl.get(area).setValue(moment(date).utc(), { emitEvent: false });\n    this.writeValue(updatedValue);\n  }\n\n  validateDateSelection ( dateRange ): void {\n    if ( moment(dateRange.start).isSameOrBefore(dateRange.end)) {\n      return;\n    }\n\n    this.formControl.setErrors({ startAfterEnd: true });\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    this.value = value;\n\n    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\n      this.formControl.patchValue(value);\n    }\n\n    this.validateDateSelection(value);\n\n    // On want to trigger on change if it is not a form control\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".date-range-inputs {\r\n\r\n  label.focused-area {\r\n    color: var(--focused-label-color) !important;\r\n  }\r\n  > .input {\r\n    border: none !important;\r\n    background: none !important;\r\n\r\n    .input-container {\r\n      display: flex;\r\n      align-items: center;\r\n      min-width: 200px;\r\n      flex: 1;\r\n\r\n      .input-wrapper {\r\n        position: relative;\r\n        background: white;\r\n        border: solid 1px var(--default-input-border);\r\n        border-radius: 4px;\r\n        padding: 6px 8px;\r\n        align-items: center;\r\n        width: 100%;\r\n        flex-wrap: wrap;\r\n        gap: 10px;\r\n        flex-wrap: nowrap !important;\r\n        outline: solid 2px transparent;\r\n\r\n        input {\r\n          width: 100%;\r\n        }\r\n        button {\r\n          background: none;\r\n          outline: none;\r\n          border: none;\r\n\r\n          i {\r\n            color: #333;\r\n            transition: all 0.175s ease-in-out;\r\n          }\r\n\r\n          &:hover {\r\n            cursor: pointer;\r\n            i {\r\n              color: var(--form-input-color);\r\n            }\r\n          }\r\n\r\n          &:focus {\r\n            i {\r\n              color: var(--form-input-color);\r\n            }\r\n          }\r\n        }\r\n      }\r\n\r\n      &.focused {\r\n        label {\r\n          color: var(--focused-label-color) !important;\r\n        }\r\n\r\n        .input-wrapper {\r\n          outline: solid 2px var(--outline-color);\r\n          border-color: var(--focused-input-border);\r\n        }\r\n      }\r\n\r\n      > label {\r\n        margin-right: 8px;\r\n        font-size: 14px;\r\n        text-align: right;\r\n        min-width: 30px;\r\n      }\r\n    }\r\n  }\r\n}\r\n\r\n\r\n\r\n// Hide the actual date range input\r\nmat-date-range-input {\r\n  height: 0;\r\n  width: 100%;\r\n  opacity: 0;\r\n  position: absolute;\r\n  bottom: 0;\r\n}\r\n",
+                    "data": ".date-range-inputs {\r\n\r\n  label.focused-area {\r\n    color: var(--focused-label-color) !important;\r\n  }\r\n  > .input {\r\n    border: none !important;\r\n    background: none !important;\r\n    margin-bottom: 0;\r\n\r\n    > .input-wrapper {\r\n      flex-wrap: wrap;\r\n    }\r\n    .input-container {\r\n      display: flex;\r\n      align-items: center;\r\n      min-width: 200px;\r\n      flex: 1;\r\n      margin-bottom: 12px;\r\n      transition: all 0.175s ease-in-out;\r\n\r\n\r\n      .input-wrapper {\r\n        position: relative;\r\n        background: white;\r\n        border: solid 1px var(--default-input-border);\r\n        border-radius: 4px;\r\n        padding: 6px 8px;\r\n        align-items: center;\r\n        width: 100%;\r\n        flex-wrap: wrap;\r\n        gap: 10px;\r\n        flex-wrap: nowrap !important;\r\n        outline: solid 2px transparent;\r\n\r\n        input {\r\n          width: 100%;\r\n        }\r\n        button {\r\n          background: none;\r\n          outline: none;\r\n          border: none;\r\n\r\n          i {\r\n            color: #333;\r\n            transition: all 0.175s ease-in-out;\r\n          }\r\n\r\n          &:hover {\r\n            cursor: pointer;\r\n            i {\r\n              color: var(--form-input-color);\r\n            }\r\n          }\r\n\r\n          &:focus {\r\n            i {\r\n              color: var(--form-input-color);\r\n            }\r\n          }\r\n        }\r\n      }\r\n\r\n      &.focused {\r\n        label {\r\n          color: var(--focused-label-color) !important;\r\n        }\r\n\r\n        .input-wrapper {\r\n          outline: solid 2px var(--outline-color);\r\n          border-color: var(--focused-input-border);\r\n        }\r\n      }\r\n\r\n      &.invalid {\r\n\r\n        .input-wrapper {\r\n          border: solid 1px var(--error);\r\n\r\n          transition: all 0.175s ease-in-out;\r\n          outline: solid 2px var(--error-600);\r\n        }\r\n\r\n        &.focused {\r\n          .input-wrapper {\r\n            outline-color: var(--error);\r\n          }\r\n        }\r\n      }\r\n\r\n      &.disabled {\r\n        .input-wrapper {\r\n          box-shadow: none;\r\n          background: rgba(0, 0, 0, 0.04);\r\n          border: solid 1px rgba( 0, 0, 0, 0.15);\r\n          color: rgba( 0, 0, 0, 0.8);\r\n\r\n          button {\r\n            &:hover,\r\n            &:focus {\r\n              cursor: auto;\r\n              i {\r\n                color: #333 !important;\r\n              }\r\n            }\r\n          }\r\n        }\r\n      }\r\n\r\n      > label {\r\n        margin-right: 8px;\r\n        font-size: 14px;\r\n        text-align: right;\r\n        min-width: 30px;\r\n      }\r\n    }\r\n\r\n  }\r\n}\r\n\r\n.errors {\r\n  margin-top: -12px;\r\n}\r\n\r\n\r\n\r\n// Hide the actual date range input\r\nmat-date-range-input {\r\n  height: 0;\r\n  width: 100%;\r\n  opacity: 0;\r\n  position: absolute;\r\n  bottom: 0;\r\n  overflow: hidden;\r\n\r\n  .mat-date-range-input-container {\r\n    height: 0 !important;\r\n  }\r\n}\r\n",
                     "styleUrl": "./new-date-range-input.component.scss"
                 }
             ],
@@ -2502,8 +2969,41 @@
                 "description": "",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "args": [],
-                "line": 36
+                "args": [
+                    {
+                        "name": "selectionStrategy",
+                        "type": "FiveDayRangeSelectionStrategy<DateRange<Date>>",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "selectedDateState",
+                        "type": "SelectedDateState",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 109,
+                "jsdoctags": [
+                    {
+                        "name": "selectionStrategy",
+                        "type": "FiveDayRangeSelectionStrategy<DateRange<Date>>",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "selectedDateState",
+                        "type": "SelectedDateState",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
             },
             "extends": "CustomFormControl",
             "implements": [
@@ -2517,7 +3017,7 @@
                         "name": "startControl",
                         "type": "",
                         "returnType": "FormControl",
-                        "line": 28
+                        "line": 101
                     }
                 },
                 "endControl": {
@@ -2526,15 +3026,15 @@
                         "name": "endControl",
                         "type": "",
                         "returnType": "FormControl",
-                        "line": 32
+                        "line": 105
                     }
                 }
             },
-            "templateData": "\n  <section\n    class=\"form-input date-range-inputs\">\n\n  <label\n    [class.focused-area]=\"focused || secondInputFocus\"\n    [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n    <div class=\"input-wrapper\">\n\n      <div class=\"input-container\"\n        [class.disabled]=\"disabled\"\n        [class.focused]=\"focused\">\n          <label [for]=\"formId\">\n            From\n          </label>\n\n          <div class=\"input-wrapper\">\n            <input\n              #input\n              type=\"text\"\n              [id]=\"formId\"\n              [ngModel]=\"formControl.value.start | date: 'dd/MM/yyyy'\"\n              [ngModelOptions]=\"{standalone: true}\"\n              [disabled]=\"disabled\"\n              (focus)=\"focused = true\"\n              (blur)=\"focused = false\">\n\n              <mat-date-range-input\n                tabindex=\"-1\"\n                [max]=\"formControl.value.end\"\n                [rangePicker]=\"picker\">\n                <input\n                tabindex=\"-1\"\n                [value]=\"formControl.value.start\"\n                (dateInput)=\"updateValue($event.value, 'start')\"\n                matStartDate type=\"text\">\n                <input\n                  tabindex=\"-1\"\n              [value]=\"formControl.value.end\"\n\n                  matEndDate disabled readonly type=\"text\">\n              </mat-date-range-input>\n              <mat-date-range-picker #picker></mat-date-range-picker>\n\n              <button\n                (click)=\"picker.open()\"\n                [disabled]=\"disabled\"\n                class=\"date-picker-icon\">\n                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n              </button>\n\n          </div>\n\n      </div>\n\n      <section class=\"input-container\"\n        [class.disabled]=\"disabled\"\n        [class.focused]=\"secondInputFocus\">\n        <label [for]=\"secondFormId\">\n          To\n        </label>\n\n        <div class=\"input-wrapper\">\n          <input\n            #input2\n            type=\"text\"\n            [id]=\"secondFormId\"\n            [ngModel]=\"formControl.value.end | date : 'dd/MM/yyyy'\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"secondInputFocus = true\"\n            (blur)=\"secondInputFocus = false\">\n\n            <mat-date-range-input\n              tabindex=\"-1\"\n              [min]=\"formControl.value.start\"\n              [rangePicker]=\"picker2\">\n              <input\n              tabindex=\"-1\"\n              disabled readonly\n              [value]=\"formControl.value.start\"\n              matStartDate type=\"text\">\n              <input\n              tabindex=\"-1\"\n              [value]=\"formControl.value.end\"\n              (dateInput)=\"updateValue($event.value, 'end')\" matEndDate type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker #picker2 ></mat-date-range-picker>\n\n            <button\n              (click)=\"picker2.open()\"\n              [disabled]=\"disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n        </div>\n      </section>\n    </div>\n  </section>\n\n\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n"
+            "templateData": "\n  <section\n    class=\"form-input date-range-inputs\">\n\n  <label\n    [class.focused-area]=\"focused || secondInputFocus\"\n    [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n    <div class=\"input-wrapper\">\n\n      <div class=\"input-container\"\n        [class.disabled]=\"disabled || startControl.disabled\"\n        [class.invalid]=\"formControl.invalid\"\n        [class.focused]=\"focused\">\n          <label [for]=\"formId\">\n            From\n          </label>\n          <div class=\"input-wrapper\">\n            <input\n              #input\n              autocomplete=\"off\"\n              type=\"text\"\n              [id]=\"formId\"\n              [ngModel]=\"startControl.value | date : 'dd/MM/yyyy'\"\n              [disabled]=\"disabled\"\n              (focus)=\"focused = true\"\n              (blur)=\"writtenInputUpdate(input.value, 'start');focused = false\">\n\n              <mat-date-range-input\n                tabindex=\"-1\"\n                [max]=\"endControl.value\"\n                [rangePicker]=\"picker\">\n                <input\n                matStartDate\n                tabindex=\"-1\"\n                [value]=\"startControl.value\"\n                matStartDate type=\"text\">\n                <input\n                  matEndDate\n                  tabindex=\"-1\"\n                  [value]=\"endControl.value\"\n                  matEndDate\n                  type=\"text\">\n              </mat-date-range-input>\n              <mat-date-range-picker\n                #picker\n                (closed)=\"openInput('end', picker2)\"\n                >\n              </mat-date-range-picker>\n\n              <button\n                (click)=\"openInput( 'start', picker )\"\n                [disabled]=\"disabled || startControl.disabled\"\n                class=\"date-picker-icon\">\n                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n              </button>\n\n          </div>\n\n      </div>\n\n      <section class=\"input-container\"\n        [class.disabled]=\"endControl.disabled || disabled\"\n        [class.invalid]=\"formControl.invalid\"\n        [class.focused]=\"secondInputFocus\">\n        <label [for]=\"secondFormId\">\n          To\n        </label>\n\n        <div class=\"input-wrapper\">\n          <input\n            #input2\n            autocomplete=\"off\"\n            type=\"text\"\n            [id]=\"secondFormId\"\n            [ngModel]=\"endControl.value | date : 'dd/MM/yyyy'\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"secondInputFocus = true\"\n            (blur)=\"writtenInputUpdate(input2.value, 'end'); secondInputFocus = false\">\n\n            <mat-date-range-input\n              tabindex=\"-1\"\n              [min]=\"startControl.value\"\n              [rangePicker]=\"picker2\">\n              <input\n              matStartDate\n              tabindex=\"-1\"\n              disabled readonly\n              [value]=\"startControl.value\"\n              matStartDate type=\"text\">\n              <input\n              matEndDate\n              tabindex=\"-1\"\n              [value]=\"endControl.value\"\n              matEndDate type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker\n              #picker2\n              [restoreFocus]=\"false\">\n            </mat-date-range-picker>\n\n            <button\n              (click)=\"openInput( 'end', picker2 )\"\n              [disabled]=\"disabled || endControl.disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n        </div>\n      </section>\n    </div>\n  </section>\n\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ ( formControl.getRawValue() || value ) |json  }}</p>\n  </div>\n</section>\n"
         },
         {
             "name": "NumberInputComponent",
-            "id": "component-NumberInputComponent-066e170fbbf8148008dd9b966712462b2b2d314ecb92a6c3e65ac04e29134948c4c396364f1915f9010c82d989a3ee80e92f4c2db54018c1b892f0f9492a159f",
+            "id": "component-NumberInputComponent-f9fc43a76e53745c1d166e5cf5494dbc688ed43dba634a675ede08fa9376726555dcf80f501145a72b8bdbbcf66d23f88f9929f79bb3477896de33aef3376837",
             "file": "src/app/components/number-input/number-input.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -2557,7 +3057,7 @@
             "viewProviders": [],
             "inputsClass": [
                 {
-                    "name": "format",
+                    "name": "numberFormat",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "line": 19,
@@ -3056,7 +3556,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-number-input',\n  templateUrl: './number-input.component.html',\n  styleUrls: ['./number-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NumberInputComponent)\n    }\n  ]\n})\nexport class NumberInputComponent extends CustomFormControl implements ControlValueAccessor {\n\n  @Input() format: string;\n\n  constructor() {\n    super();\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    const decimalMax = this.format?.substring(1, this.format?.length);\n\n    if ( decimalMax ) {\n      value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n    }\n\n    if (value !== `${this.formControl.value}` && !inputChange) {\n      this.formControl.setValue(`${value}`, { emitEvent: false });\n    }\n\n    this.value = value;\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n\n  checkFormat(): void {\n    const decimalMax = this.format?.substring(1, this.format.length);\n\n    if ( this.value === '' || !this.value && this.defaultValue ) {\n      this.value = this.defaultValue;\n    }\n\n    let value = this.value;\n\n    if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {\n      this.value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n      this.formControl.setValue(parseFloat(`${value}`).toFixed(parseInt(decimalMax)));\n    }\n  }\n\n  checkInput(event): boolean {\n    if ([46, 8, 9, 27, 13, 110, 190].indexOf(event.keyCode) !== -1 ||\n        // Allow: Ctrl+A\n        (event.keyCode === 65 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+C\n        (event.keyCode === 67 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+V\n        (event.keyCode === 86 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+X\n        (event.keyCode === 88 && (event.ctrlKey || event.metaKey)) ||\n        (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: home, end, left, right\n        (event.keyCode >= 35 && event.keyCode <= 39)) {\n          // let it happen, don't do anything\n          return true;\n        }\n        // Ensure that it is a number and stop the keypress\n        if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {\n            event.preventDefault();\n        }\n\n\n    return true;\n  }\n}\n",
+            "sourceCode": "import { Component, forwardRef, Input } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-number-input',\n  templateUrl: './number-input.component.html',\n  styleUrls: ['./number-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => NumberInputComponent)\n    }\n  ]\n})\nexport class NumberInputComponent extends CustomFormControl implements ControlValueAccessor {\n\n  @Input() numberFormat: string;\n\n  constructor() {\n    super();\n  }\n\n  writeValue( value: any, inputChange: boolean = false ): void {\n    const decimalMax = this.numberFormat?.substring(1, this.numberFormat?.length);\n\n    if ( decimalMax ) {\n      value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n    }\n\n    if (value !== `${this.formControl.value}` && !inputChange) {\n      this.formControl.setValue(`${value}`, { emitEvent: false });\n    }\n\n    this.value = value;\n    if ( !this.customFormControl ) {\n      this.onChange?.(value);\n    }\n  }\n\n  checkFormat(): void {\n    const decimalMax = this.numberFormat?.substring(1, this.numberFormat.length);\n\n    if ( this.value === '' || !this.value && this.defaultValue ) {\n      this.value = this.defaultValue;\n    }\n\n    let value = this.value;\n\n    if ( decimalMax && `${this.formControl.value}` !== parseFloat(`${value}`).toFixed(parseInt(decimalMax))) {\n      this.value = parseFloat(`${value}`).toFixed(parseInt(decimalMax));\n      this.formControl.setValue(parseFloat(`${value}`).toFixed(parseInt(decimalMax)));\n    }\n  }\n\n  checkInput(event): boolean {\n    if ([46, 8, 9, 27, 13, 110, 190].indexOf(event.keyCode) !== -1 ||\n        // Allow: Ctrl+A\n        (event.keyCode === 65 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+C\n        (event.keyCode === 67 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+V\n        (event.keyCode === 86 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: Ctrl+X\n        (event.keyCode === 88 && (event.ctrlKey || event.metaKey)) ||\n        (event.keyCode === 90 && (event.ctrlKey || event.metaKey)) ||\n        // Allow: home, end, left, right\n        (event.keyCode >= 35 && event.keyCode <= 39)) {\n          // let it happen, don't do anything\n          return true;\n        }\n        // Ensure that it is a number and stop the keypress\n        if ((event.shiftKey || (event.keyCode < 48 || event.keyCode > 57)) && (event.keyCode < 96 || event.keyCode > 105)) {\n            event.preventDefault();\n        }\n\n\n    return true;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -3077,7 +3577,7 @@
             "implements": [
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\"\n    [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n>\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        [id]=\"formId\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (keydown)=\"checkInput($event)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"checkFormat(); onTouched(); focused = false\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n\n</section>\n\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\"\n    [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n>\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        autocomplete=\"off\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        [id]=\"formId\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (keydown)=\"checkInput($event)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"checkFormat(); onTouched(); focused = false\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n\n</section>\n\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
         },
         {
             "name": "SelectInputComponent",
@@ -3804,11 +4304,11 @@
                 "OnChanges",
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"select?.focused\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <div class=\"select-input-container\">\n    <section class=\"select input\">\n\n      <p *ngIf=\"prefix\">\n        {{ prefix }}\n      </p>\n      <div class=\"input-wrapper\">\n        <ng-select\n          #select\n          [labelForId]=\"formId\"\n          [ngModel]=\"formControl.value\"\n          (ngModelChange)=\"writeValue($event)\"\n          [items]=\"selectOptions\"\n          [bindLabel]=\"bindLabel\"\n          [bindValue]=\"bindValue\"\n          [virtualScroll]=\"true\"\n          [disabled]=\"disabled\"\n          [multiple]=\"multiSelect\"\n          [clearable]=\"clearable\"\n          [dropdownPosition]=\"dropdownPosition\"\n          [groupBy]=\"groupedList ? groupByFn || groupName : undefined\"\n          [groupValue]=\"groupedList ? groupValueFn : undefined\"\n          (search)=\"handleUserSearch()\"\n          (open)=\"handleOpen()\"\n          (blur)=\"onBlur()\"\n          (focus)=\"formControl.markAsTouched(); focused = true\">\n\n          <ng-template\n            *ngIf=\"templateName === undefined\"\n            ng-label-tmp let-item=\"item\" let-clear=\"clear\">\n            <span class=\"ng-value-label\">\n              {{\n                bindLabel ?\n                  item[bindLabel] || 'None'\n                  : item || 'None'\n              }}\n          </span>\n            <span class=\"ng-value-icon right\" (click)=\"clear(item)\" aria-hidden=\"true\">×</span>\n          </ng-template>\n\n\n\n          <!-- Select group heading -->\n          <ng-template ng-optgroup-tmp let-item=\"item\">\n            <div\n              #optGroupHolder\n              showToolTip\n              class=\"mat-optgroup-label acu-select-group-heading\"\n              [matTooltip]=\"item\"\n              [matTooltipDisabled]=\"optGroupHolder.tooltipDisabled\"\n              matTooltipClass=\"acu-select-tooltip\">\n                <span\n                  #optGroup>\n                  {{ item }}\n                </span>\n            </div>\n          </ng-template>\n          <!-- Select options -->\n\n\n          <ng-template\n            ng-option-tmp\n            *ngIf=\"templateName === undefined\"\n            let-item=\"item\"\n            let-item$=\"item$\"\n            let-showToolTip=\"showtTooltip\"\n            let-index=\"index\">\n            <mat-checkbox\n              *ngIf=\"checkBoxSelect\"\n              [disabled]=\"true\"\n              [checked]=\"item$.selected\">\n            </mat-checkbox>\n\n            <div\n              #optionHolder\n              showToolTip\n              class=\"mat-option-text\"\n              [matTooltip]=\"( labelFormatter ? labelFormatter(item) : item[ bindLabel ] )\"\n              [matTooltipDisabled]=\"optionHolder.tooltipDisabled\"\n              matTooltipClass=\"acu-select-tooltip\"\n            >\n              <span #option\n                [stringHighlight]=\"select.searchTerm\">\n                    {{ labelFormatter\n                      ? labelFormatter(item)\n                        : ( bindLabel ? item[ bindLabel ] : item ) }}\n              </span>\n            </div>\n          </ng-template>\n\n        </ng-select>\n      </div>\n\n\n    </section>\n\n    <section class=\"select-actions\">\n      <!-- Pass in custom select actions -->\n      <ng-content select=\"selectActions\"></ng-content>\n      <button\n        *ngIf=\"showRemoveIcon\"\n        matTooltip=\"Remove row\"\n        class=\"remove-row-icon\"\n        (click)=\"removeRow.emit()\">\n        <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n      </button>\n    </section>\n\n  </div>\n\n\n</section>\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\nclass=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"select?.focused\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <div class=\"select-input-container\">\n    <section class=\"select input\">\n\n      <p *ngIf=\"prefix\">\n        {{ prefix }}\n      </p>\n      <div class=\"input-wrapper\">\n        <ng-select\n          #select\n          autocomplete=\"off\"\n          [labelForId]=\"formId\"\n          [ngModel]=\"formControl.value\"\n          (ngModelChange)=\"writeValue($event)\"\n          [items]=\"selectOptions\"\n          [bindLabel]=\"bindLabel\"\n          [bindValue]=\"bindValue\"\n          [virtualScroll]=\"true\"\n          [disabled]=\"disabled\"\n          [multiple]=\"multiSelect\"\n          [clearable]=\"clearable\"\n          [loading]=\"loading\"\n          [dropdownPosition]=\"dropdownPosition\"\n          [groupBy]=\"groupedList ? groupByFn || groupName : undefined\"\n          [groupValue]=\"groupedList ? groupValueFn : undefined\"\n          (search)=\"handleUserSearch()\"\n          (open)=\"handleOpen()\"\n          (blur)=\"onBlur()\"\n          (focus)=\"formControl.markAsTouched(); focused = true\">\n\n          <ng-template\n            *ngIf=\"templateName === undefined\"\n            ng-label-tmp let-item=\"item\" let-clear=\"clear\">\n            <span class=\"ng-value-label\">\n              {{\n                bindLabel ?\n                  item[bindLabel] || 'None'\n                  : item || 'None'\n              }}\n          </span>\n            <span class=\"ng-value-icon right\" (click)=\"clear(item)\" aria-hidden=\"true\">×</span>\n          </ng-template>\n\n\n\n          <!-- Select group heading -->\n          <ng-template ng-optgroup-tmp let-item=\"item\">\n            <div\n              #optGroupHolder\n              showToolTip\n              class=\"mat-optgroup-label acu-select-group-heading\"\n              [matTooltip]=\"item\"\n              [matTooltipDisabled]=\"optGroupHolder.tooltipDisabled\"\n              matTooltipClass=\"acu-select-tooltip\">\n                <span\n                  #optGroup>\n                  {{ item }}\n                </span>\n            </div>\n          </ng-template>\n          <!-- Select options -->\n\n\n          <ng-template\n            ng-option-tmp\n            *ngIf=\"templateName === undefined\"\n            let-item=\"item\"\n            let-item$=\"item$\"\n            let-showToolTip=\"showtTooltip\"\n            let-index=\"index\">\n            <mat-checkbox\n              *ngIf=\"checkBoxSelect\"\n              [disabled]=\"true\"\n              [checked]=\"item$.selected\">\n            </mat-checkbox>\n\n            <div\n              #optionHolder\n              showToolTip\n              class=\"mat-option-text\"\n              [matTooltip]=\"( labelFormatter ? labelFormatter(item) : item[ bindLabel ] )\"\n              [matTooltipDisabled]=\"optionHolder.tooltipDisabled\"\n              matTooltipClass=\"acu-select-tooltip\"\n            >\n              <span #option\n                [stringHighlight]=\"select.searchTerm\">\n                    {{ labelFormatter\n                      ? labelFormatter(item)\n                        : ( bindLabel ? item[ bindLabel ] : item ) }}\n              </span>\n            </div>\n          </ng-template>\n\n        </ng-select>\n      </div>\n\n\n    </section>\n\n    <section class=\"select-actions\">\n      <!-- Pass in custom select actions -->\n      <ng-content select=\"selectActions\"></ng-content>\n      <button\n        *ngIf=\"showRemoveIcon\"\n        matTooltip=\"Remove row\"\n        class=\"remove-row-icon\"\n        (click)=\"removeRow.emit()\">\n        <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n      </button>\n    </section>\n\n  </div>\n\n\n</section>\n<section\n*ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\nclass=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n"
         },
         {
             "name": "SliderInputComponent",
-            "id": "component-SliderInputComponent-ff2ce8db5f283305dfb1733bbfbf210aba3ca93b1b700e498a56be0d1b0813a946f38856aab00a3a740a12df689a1e19138fcbd2509510d4a67e6aef46d066ad",
+            "id": "component-SliderInputComponent-dff8106c72ac6b965aa90e927364c91a6ebebdc2b05936f42a5b6868bb00ac899b18ccd24759d95756eb92a323058558bbb3c1b9f57736be59469230ee021e11",
             "file": "src/app/components/slider-input/slider-input.component.ts",
             "encapsulation": [
                 "ViewEncapsulation.None"
@@ -4130,7 +4630,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 56,
+                    "line": 33,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "jsdoctags": [
@@ -4323,7 +4823,7 @@
             "description": "",
             "rawdescription": "\n",
             "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input, ViewEncapsulation } from '@angular/core';\nimport { NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-slider-input',\n  templateUrl: './slider-input.component.html',\n  styleUrls: ['./slider-input.component.scss'],\n  encapsulation: ViewEncapsulation.None,\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SliderInputComponent )\n    }\n  ]\n})\nexport class SliderInputComponent extends CustomFormControl {\n\n\n  @Input() min: number = 0;\n\n  @Input() max: number = 100;\n\n  @Input() steps: number = 1;\n\n  inputValue: number = this.formControl.value || 0;\n\n  constructor() {\n    super();\n  }\n}\n\n",
+            "sourceCode": "import { Component, forwardRef, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';\nimport { NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-slider-input',\n  templateUrl: './slider-input.component.html',\n  styleUrls: ['./slider-input.component.scss'],\n  encapsulation: ViewEncapsulation.None,\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      multi: true,\n      useExisting: forwardRef(() => SliderInputComponent )\n    }\n  ]\n})\nexport class SliderInputComponent extends CustomFormControl implements OnChanges {\n\n\n  @Input() min: number = 0;\n\n  @Input() max: number = 100;\n\n  @Input() steps: number = 1;\n\n  inputValue: number = this.formControl.value || 0;\n\n  constructor() {\n    super();\n  }\n\n  ngOnChanges(changes: SimpleChanges): void {\n    super.ngOnChanges(changes);\n\n    if ( changes.formControl ) {\n      this.inputValue = this.formControl.value;\n    }\n  }\n}\n\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -4341,6 +4841,9 @@
                 "line": 27
             },
             "extends": "CustomFormControl",
+            "implements": [
+                "OnChanges"
+            ],
             "templateData": "<section\n  class=\"form-input app-slider-input\"\n  [class.disabled]=\"disabled\"\n  [class.full-selection]=\"inputValue === max\"\n  [class.no-selection]=\"inputValue === min\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused && !disabled\">\n\n  <label *ngIf=\"showLabel\" [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <mat-slider\n        #slider\n        [id]=\"formId\"\n        class=\"custom-mat-slider\"\n        [disabled]=\"disabled\"\n        [formControl]=\"formControl\"\n        [min]=\"min\"\n        [max]=\"max\"\n        [step]=\"steps\"\n        [tickInterval]=\"10\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onBlur()\"\n        (input)=\"inputValue = $event.value\"\n        (change)=\"writeValue($event.value, true); slider.blur()\">\n      </mat-slider>\n    </div>\n\n  </section>\n  <!-- If you want to add labels etc to the bottom of the slider! -->\n  <ng-content></ng-content>\n\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n  <div class=\"data-item\">\n    <p>Slider value</p>\n    <p>{{ inputValue }}</p>\n  </div>\n</section>\n"
         },
         {
@@ -5343,7 +5846,7 @@
             "implements": [
                 "ControlValueAccessor"
             ],
-            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        [id]=\"formId\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onBlur()\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n</section>\n"
+            "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.invalid]=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  [class.focused]=\"focused\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <p *ngIf=\"prefix\">\n      {{ prefix }}\n    </p>\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        autocomplete=\"off\"\n        [id]=\"formId\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (keyup)=\"writeValue($event.target.value, true)\"\n        (focus)=\"onTouched(); focused = true\"\n        (blur)=\"onBlur()\">\n\n        <p class=\"suffix-placeholder\" *ngIf=\"suffix\">{{ suffix }} </p>\n        <div\n          *ngIf=\"suffix\"\n           class=\"suffix-overlay\">\n          <p>{{input.value}}</p>\n          <p>\n            {{ suffix }}\n          </p>\n        </div>\n    </div>\n  </section>\n</section>\n\n<section\n  *ngIf=\"formControl?.invalid && (formControl.touched || submitAttempt)\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n</section>\n"
         },
         {
             "name": "ToggleSlideComponent",
@@ -6013,14 +6516,83 @@
             ]
         },
         {
+            "name": "LongFormModule",
+            "id": "module-LongFormModule-304f8ed58e2313eb0a74e649957b663bc63c37b2bf2a21a668285e7c8c458789ce3a666439ea5750fdcf7cbd092e3ab23dea395a354643614a96b1745b17c233",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/stories/playgrounds/long-form/long-form.module.ts",
+            "methods": [],
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { DatePickerModule } from 'src/app/components/date-picker/date-picker.module';\nimport { NewDateRangeInputModule } from 'src/app/components/new-date-range-input/new-date-range-input.module';\nimport { NumberInputModule } from 'src/app/components/number-input/number-input.module';\nimport { SelectInputModule } from 'src/app/components/select-input/select-input.module';\nimport { SliderInputModule } from 'src/app/components/slider-input/slider-input.module';\nimport { TextAreaModule } from 'src/app/components/text-area/text-area.module';\nimport { TextInputModule } from 'src/app/components/text-input/text-input.module';\nimport { ToggleSlideModule } from 'src/app/components/toggle-slide/toggle-slide.module';\nimport { LongFormComponent } from './long-form.component';\n\n\n\n@NgModule({\n  declarations: [\n    LongFormComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    TextInputModule,\n    TextAreaModule,\n    ToggleSlideModule,\n    SliderInputModule,\n    SelectInputModule,\n    NumberInputModule,\n    NewDateRangeInputModule,\n    DatePickerModule,\n  ],\n  exports: [\n    LongFormComponent,\n  ]\n})\nexport class LongFormModule { }\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "LongFormComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "DatePickerModule"
+                        },
+                        {
+                            "name": "NewDateRangeInputModule"
+                        },
+                        {
+                            "name": "NumberInputModule"
+                        },
+                        {
+                            "name": "SelectInputModule"
+                        },
+                        {
+                            "name": "SliderInputModule"
+                        },
+                        {
+                            "name": "TextAreaModule"
+                        },
+                        {
+                            "name": "TextInputModule"
+                        },
+                        {
+                            "name": "ToggleSlideModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "LongFormComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
             "name": "NewDateRangeInputModule",
-            "id": "module-NewDateRangeInputModule-5e603d6c8417c5fcdb8b0b087cc9667489dca19eb0a2605a32f6ecd4a7501fc09d78319fbb103b69ccd94565b8d7fedd55c07202f153477249240794898837e4",
+            "id": "module-NewDateRangeInputModule-b6b577e1fd51be3fff8cb0ecf1c268942506791d74978861a2bd79ca91e349ad7ab7b6f1792afc4734cd70de05ce62d7628f96ad7316164bba7a9a9c9f8c8b93",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/app/components/new-date-range-input/new-date-range-input.module.ts",
             "methods": [],
-            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';\nimport { MAT_DATE_LOCALE } from '@angular/material/core';\nimport { MatDatepickerModule } from '@angular/material/datepicker';\nimport { NewDateRangeInputComponent } from './new-date-range-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    NewDateRangeInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    MatDatepickerModule,\n    MatMomentDateModule\n  ],\n  providers: [\n    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},\n    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}\n  ]\n})\nexport class NewDateRangeInputModule { }\n",
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';\nimport { MAT_DATE_LOCALE } from '@angular/material/core';\nimport { MatDatepickerModule } from '@angular/material/datepicker';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { NewDateRangeInputComponent } from './new-date-range-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    NewDateRangeInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    MatDatepickerModule,\n    MatFormFieldModule,\n    MatMomentDateModule\n  ],\n  providers: [\n    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},\n    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}\n  ],\n  exports: [\n    NewDateRangeInputComponent,\n  ]\n})\nexport class NewDateRangeInputModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -6040,7 +6612,11 @@
                 },
                 {
                     "type": "exports",
-                    "elements": []
+                    "elements": [
+                        {
+                            "name": "NewDateRangeInputComponent"
+                        }
+                    ]
                 },
                 {
                     "type": "bootstrap",
@@ -6343,16 +6919,6 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/date-range.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "Template.bind({})"
-            },
-            {
-                "name": "Default",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "src/stories/date-picker.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -6373,7 +6939,7 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/select-input.stories.ts",
+                "file": "src/stories/date-range.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6384,6 +6950,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/slider-control.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6404,6 +6980,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6490,6 +7076,26 @@
                 "defaultValue": "Template.bind({})"
             },
             {
+                "name": "DisabledEnd",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "DisabledStart",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
                 "name": "environment",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -6523,7 +7129,7 @@
                 "name": "Error",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/select-input.stories.ts",
+                "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6533,7 +7139,7 @@
                 "name": "Error",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/slider-control.stories.ts",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6573,21 +7179,21 @@
                 "name": "errorInput",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/select-input.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "new FormControl({ name: 'Hello' }, Validators.compose([Validators.required]))"
-            },
-            {
-                "name": "errorInput",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "new FormControl(0, Validators.compose([Validators.min(50)]))"
+            },
+            {
+                "name": "errorInput",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormControl({ name: 'Hello' }, Validators.compose([Validators.required]))"
             },
             {
                 "name": "errorInput",
@@ -6608,16 +7214,6 @@
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "new FormControl('hlo', Validators.compose([Validators.minLength(5)]))"
-            },
-            {
-                "name": "fieldsToNotIncludeOptions",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/stories/date-range.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
             },
             {
                 "name": "fieldsToNotIncludeOptions",
@@ -6643,7 +7239,17 @@
                 "name": "fieldsToNotIncludeOptions",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/select-input.stories.ts",
+                "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+            },
+            {
+                "name": "fieldsToNotIncludeOptions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/slider-control.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6653,7 +7259,7 @@
                 "name": "fieldsToNotIncludeOptions",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/slider-control.stories.ts",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6674,6 +7280,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+            },
+            {
+                "name": "fieldsToNotIncludeOptions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6708,6 +7324,16 @@
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "formDisabledEnd",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
             },
             {
                 "name": "GroupedSelect",
@@ -6804,6 +7430,26 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/select-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "noValue",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "new FormGroup({\r\n  start: new FormControl(),\r\n  end: new FormControl(),\r\n})"
+            },
+            {
+                "name": "NoValue",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/date-range.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6919,54 +7565,54 @@
                 "defaultValue": "(args) => ({\r\n  props: args,\r\n  template: `<app-slider-input\r\n    label=\"Form slider\">\r\n    <div style=\"display: flex; justify-content: space-between; width: 100%\">\r\n      <p>Label at start</p>\r\n      <p>Label at end</p>\r\n    </div>\r\n    </app-slider-input>`\r\n})"
             },
             {
-                "name": "Suffix",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "Template.bind({})"
-            },
-            {
-                "name": "Suffix",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/stories/text-input.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "Template.bind({})"
-            },
-            {
-                "name": "SuffixWithLongInput",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "Template.bind({})"
-            },
-            {
-                "name": "SuffixWithLongInput",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
-                "file": "src/stories/text-input.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "",
-                "defaultValue": "Template.bind({})"
-            },
-            {
-                "name": "Template",
+                "name": "startDisabled",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/date-range.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
-                "type": "Story",
-                "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                "type": "",
+                "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
+            },
+            {
+                "name": "Suffix",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/number-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Suffix",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "SuffixWithLongInput",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/number-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "SuffixWithLongInput",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
             },
             {
                 "name": "Template",
@@ -6992,7 +7638,7 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/select-input.stories.ts",
+                "file": "src/stories/date-range.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -7003,6 +7649,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/slider-control.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "Template",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/select-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -7023,6 +7679,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "Template",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -7336,48 +8002,6 @@
                     "type": "literal type"
                 }
             ],
-            "src/stories/date-range.stories.ts": [
-                {
-                    "name": "Default",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "fieldsToNotIncludeOptions",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
-                },
-                {
-                    "name": "form",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date()),\r\n})"
-                },
-                {
-                    "name": "Template",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "Story",
-                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
-                }
-            ],
             "src/stories/date-picker.stories.ts": [
                 {
                     "name": "Default",
@@ -7546,6 +8170,108 @@
                     "ctype": "miscellaneous",
                     "subtype": "variable",
                     "file": "src/stories/number-input.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                }
+            ],
+            "src/stories/date-range.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "DisabledEnd",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "DisabledStart",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "form",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date()),\r\n})"
+                },
+                {
+                    "name": "formDisabledEnd",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
+                },
+                {
+                    "name": "noValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(),\r\n  end: new FormControl(),\r\n})"
+                },
+                {
+                    "name": "NoValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "startDisabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -7818,6 +8544,38 @@
                     "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
                 }
             ],
+            "src/stories/playgrounds/long-form/long-form.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                }
+            ],
             "src/environments/environment.prod.ts": [
                 {
                     "name": "environment",
@@ -7903,7 +8661,25 @@
                 "linktype": "component",
                 "name": "NewDateRangeInputComponent",
                 "coveragePercent": 0,
-                "coverageCount": "0/36",
+                "coverageCount": "0/38",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "FiveDayRangeSelectionStrategy",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "SelectedDateState",
+                "coveragePercent": 0,
+                "coverageCount": "0/7",
                 "status": "low"
             },
             {
@@ -8063,6 +8839,26 @@
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
+                "name": "DisabledEnd",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "DisabledStart",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
                 "name": "fieldsToNotIncludeOptions",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
@@ -8074,6 +8870,46 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "form",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "formDisabledEnd",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "noValue",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "NoValue",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/date-range.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "startDisabled",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
@@ -8200,6 +9036,45 @@
             },
             {
                 "filePath": "src/stories/number-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Template",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/playgrounds/long-form/long-form.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "LongFormComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/7",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/playgrounds/long-form/long-form.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/playgrounds/long-form/long-form.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "fieldsToNotIncludeOptions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/playgrounds/long-form/long-form.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",

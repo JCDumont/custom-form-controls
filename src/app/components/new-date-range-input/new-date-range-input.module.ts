@@ -24,6 +24,9 @@ import { NewDateRangeInputComponent } from './new-date-range-input.component';
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
+  ],
+  exports: [
+    NewDateRangeInputComponent,
   ]
 })
 export class NewDateRangeInputModule { }
