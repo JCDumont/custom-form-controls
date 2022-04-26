@@ -33,6 +33,9 @@ export default {
         type: 'number'
       }
     },
+    disabled: {
+      control: { type: 'boolean' }
+    },
     fieldDisabledOverride: {
       control: { type: 'boolean' }
     },
@@ -74,25 +77,6 @@ export const OnBlur = Template.bind({});
 OnBlur.args = {
   ...Default.args,
   formControl: new FormControl('Updates on blur', { updateOn: 'blur' }),
-}
-
-export const Prefix = Template.bind({});
-Prefix.args = {
-  ...Default.args,
-  prefix: 'Prefix!: '
-}
-
-export const Suffix = Template.bind({});
-Suffix.args = {
-  ...Default.args,
-  suffix: '% amount of stuff'
-}
-
-export const SuffixWithLongInput = Template.bind({});
-SuffixWithLongInput.args = {
-  ...Default.args,
-  formControl: new FormControl('This is a a super long bit of text that will usually overflow the container showing the impact that overflowing text will have'),
-  suffix: '% amount of stuff'
 }
 
 export const Disabled = Template.bind({});

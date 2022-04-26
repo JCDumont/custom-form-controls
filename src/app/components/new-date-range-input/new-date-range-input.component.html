@@ -1,0 +1,135 @@
+
+  <section
+    class="form-input date-range-inputs">
+
+  <label
+    [class.focused-area]="focused || secondInputFocus"
+    [for]="formId">
+    {{ label }}
+  </label>
+
+  <section class="input">
+    <div class="input-wrapper">
+
+      <div class="input-container"
+        [class.disabled]="disabled || startControl.disabled"
+        [class.invalid]="formControl.invalid"
+        [class.focused]="focused">
+          <label [for]="formId">
+            From
+          </label>
+          <div class="input-wrapper">
+            <input
+              #input
+              autocomplete="off"
+              type="text"
+              [id]="formId"
+              [ngModel]="startControl.value | date : 'dd/MM/yyyy'"
+              [disabled]="disabled"
+              (focus)="focused = true"
+              (blur)="writtenInputUpdate(input.value, 'start');focused = false">
+
+              <mat-date-range-input
+                tabindex="-1"
+                [max]="endControl.value"
+                [rangePicker]="picker">
+                <input
+                matStartDate
+                tabindex="-1"
+                [value]="startControl.value"
+                matStartDate type="text">
+                <input
+                  matEndDate
+                  tabindex="-1"
+                  [value]="endControl.value"
+                  matEndDate
+                  type="text">
+              </mat-date-range-input>
+              <mat-date-range-picker
+                #picker
+                (closed)="openInput('end', picker2)"
+                >
+              </mat-date-range-picker>
+
+              <button
+                (click)="openInput( 'start', picker )"
+                [disabled]="disabled || startControl.disabled"
+                class="date-picker-icon">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+              </button>
+
+          </div>
+
+      </div>
+
+      <section class="input-container"
+        [class.disabled]="endControl.disabled || disabled"
+        [class.invalid]="formControl.invalid"
+        [class.focused]="secondInputFocus">
+        <label [for]="secondFormId">
+          To
+        </label>
+
+        <div class="input-wrapper">
+          <input
+            #input2
+            autocomplete="off"
+            type="text"
+            [id]="secondFormId"
+            [ngModel]="endControl.value | date : 'dd/MM/yyyy'"
+            [ngModelOptions]="{standalone: true}"
+            [disabled]="disabled"
+            (focus)="secondInputFocus = true"
+            (blur)="writtenInputUpdate(input2.value, 'end'); secondInputFocus = false">
+
+            <mat-date-range-input
+              tabindex="-1"
+              [min]="startControl.value"
+              [rangePicker]="picker2">
+              <input
+              matStartDate
+              tabindex="-1"
+              disabled readonly
+              [value]="startControl.value"
+              matStartDate type="text">
+              <input
+              matEndDate
+              tabindex="-1"
+              [value]="endControl.value"
+              matEndDate type="text">
+            </mat-date-range-input>
+            <mat-date-range-picker
+              #picker2
+              [restoreFocus]="false">
+            </mat-date-range-picker>
+
+            <button
+              (click)="openInput( 'end', picker2 )"
+              [disabled]="disabled || endControl.disabled"
+              class="date-picker-icon">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section
+  *ngIf="formControl?.invalid"
+  class="errors">
+  <p *ngFor="let error of formControl.errors | keyvalue">
+    {{ error.key }}
+  </p>
+</section>
+
+
+
+<section
+  *ngIf="debug"
+  class="debug-items">
+
+  <div class="data-item">
+    <p>Value</p>
+    <p>{{ ( formControl.getRawValue() || value ) |json  }}</p>
+  </div>
+</section>

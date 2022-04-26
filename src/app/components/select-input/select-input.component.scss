@@ -10,7 +10,14 @@
     width: 100%;
   }
 
-  > .remove-row-icon {
+  .label-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 199;
+  }
+
+
+  > .select-actions > .remove-row-icon {
     border: none;
     background-color: var(--error);
     color: white;
@@ -30,7 +37,7 @@
 
 ng-select {
   width: 100%;
-  height: 35px;
+  min-height: 35px;
 
   .ng-select-container {
     border: none !important;
@@ -38,6 +45,24 @@ ng-select {
     box-shadow: none !important;
     padding: 6px 0 6px 0;
     background-color: transparent !important;
+    overflow: hidden;
+
+    .ng-value-container {
+      max-width: calc(100% - 20px);
+      overflow: hidden;
+
+      .ng-value {
+        overflow: hidden;
+        display: flex;
+        max-width: 95%;
+
+        .ng-value-label {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-width: 100%;
+        }
+      }
+    }
   }
 
   input,
@@ -49,13 +74,34 @@ ng-select {
 
   .ng-dropdown-panel {
     .ng-option {
+      display: flex !important;
+      font-size: 15px;
+      line-height: 21px;
+      font-family: 'Roboto', sans-serif;
+
+      mat-checkbox {
+        margin-right: 12px;
+
+        &.mat-checkbox-checked {
+          .mat-checkbox-background{
+            background-color: var(--form-input-color) !important;
+          }
+        }
+
+      }
+
       > div {
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      &.ng-option-marked,
+
+
       &.ng-option-selected {
+        background-color: var(--form-input-color-600) !important;
+      }
+
+      &.ng-option-marked {
         background-color: var(--form-input-color-300) !important;
       }
     }
@@ -85,7 +131,7 @@ div[role="combobox"] {
 .ng-select-multiple {
   .ng-select-container {
     padding: 0 !important;
-    height: 35px !important;
+    min-height: 35px !important;
 
     .ng-value-container {
       padding-top: 0 !important;

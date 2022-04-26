@@ -4,7 +4,7 @@
   [class.focused]="select?.focused"
   [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)">
 
-  <label for="">
+  <label [for]="formId">
     {{ label }}
   </label>
 
@@ -17,6 +17,8 @@
       <div class="input-wrapper">
         <ng-select
           #select
+          autocomplete="off"
+          [labelForId]="formId"
           [ngModel]="formControl.value"
           (ngModelChange)="writeValue($event)"
           [items]="selectOptions"
@@ -26,7 +28,10 @@
           [disabled]="disabled"
           [multiple]="multiSelect"
           [clearable]="clearable"
+          [loading]="loading"
           [dropdownPosition]="dropdownPosition"
+          [groupBy]="groupedList ? groupByFn || groupName : undefined"
+          [groupValue]="groupedList ? groupValueFn : undefined"
           (search)="handleUserSearch()"
           (open)="handleOpen()"
           (blur)="onBlur()"
@@ -47,51 +52,72 @@
 
 
 
-
+          <!-- Select group heading -->
+          <ng-template ng-optgroup-tmp let-item="item">
+            <div
+              #optGroupHolder
+              showToolTip
+              class="mat-optgroup-label acu-select-group-heading"
+              [matTooltip]="item"
+              [matTooltipDisabled]="optGroupHolder.tooltipDisabled"
+              matTooltipClass="acu-select-tooltip">
+                <span
+                  #optGroup>
+                  {{ item }}
+                </span>
+            </div>
+          </ng-template>
           <!-- Select options -->
 
 
           <ng-template
-        ng-option-tmp
-        *ngIf="templateName === undefined"
-        let-item="item"
-        let-item$="item$"
-        let-index="index">
-        <mat-checkbox
-          *ngIf="checkBoxSelect"
-          [disabled]="true"
-          [checked]="item$.selected">
-        </mat-checkbox>
+            ng-option-tmp
+            *ngIf="templateName === undefined"
+            let-item="item"
+            let-item$="item$"
+            let-showToolTip="showtTooltip"
+            let-index="index">
+            <mat-checkbox
+              *ngIf="checkBoxSelect"
+              [disabled]="true"
+              [checked]="item$.selected">
+            </mat-checkbox>
 
-        <div
-          #optionHolder
-          class="mat-option-text"
-          [matTooltip]="( labelFormatter ? labelFormatter(item) : item[ bindLabel ] )"
-          [matTooltipDisabled]="tooltipEnabled"
-          matTooltipClass="acu-select-tooltip"
-          (mouseover)="showToolTip(optionHolder, option)"
-        >
-          <span #option
-                [innerHtml]="( labelFormatter
-                 ? labelFormatter(item)
-                  : ( bindLabel ? item[ bindLabel ] : item )
-                )">
-          </span>
-        </div>
-      </ng-template>
+            <div
+              #optionHolder
+              showToolTip
+              class="mat-option-text"
+              [matTooltip]="( labelFormatter ? labelFormatter(item) : item[ bindLabel ] )"
+              [matTooltipDisabled]="optionHolder.tooltipDisabled"
+              matTooltipClass="acu-select-tooltip"
+            >
+              <span #option
+                [stringHighlight]="select.searchTerm">
+                    {{ labelFormatter
+                      ? labelFormatter(item)
+                        : ( bindLabel ? item[ bindLabel ] : item ) }}
+              </span>
+            </div>
+          </ng-template>
 
         </ng-select>
       </div>
 
 
     </section>
-    <button
-      *ngIf="showRemoveIcon"
-      matTooltip="Remove row"
-      class="remove-row-icon"
-      (click)="removeRow.emit()">
-      <i class="fa fa-trash" aria-hidden="true"></i>
-    </button>
+
+    <section class="select-actions">
+      <!-- Pass in custom select actions -->
+      <ng-content select="selectActions"></ng-content>
+      <button
+        *ngIf="showRemoveIcon"
+        matTooltip="Remove row"
+        class="remove-row-icon"
+        (click)="removeRow.emit()">
+        <i class="fa fa-trash" aria-hidden="true"></i>
+      </button>
+    </section>
+
   </div>
 
 

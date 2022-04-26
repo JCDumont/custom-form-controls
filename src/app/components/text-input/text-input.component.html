@@ -4,7 +4,7 @@
   [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
   [class.focused]="focused">
 
-  <label for="">
+  <label [for]="formId">
     {{ label }}
   </label>
 
@@ -16,6 +16,7 @@
     <div class="input-wrapper">
       <input
         #input
+        [id]="formId"
         type="text"
         [formControl]="formControl"
         [disabled]="disabled"
@@ -44,15 +45,12 @@
   </p>
 </section>
 
-
 <section
   *ngIf="debug"
   class="debug-items">
-
 
   <div class="data-item">
     <p>Value</p>
     <p>{{ formControl.value || value }}</p>
   </div>
-
 </section>

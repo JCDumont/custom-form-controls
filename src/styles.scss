@@ -5,7 +5,7 @@ body {
 
 :root {
   --text-colour: #333;
-  --hue: 300;
+  --hue: 200;
 
   // 262
   --default-label-color: hsla(0, 0%, 0%, 0.5);
@@ -76,8 +76,8 @@ html {
   .input-wrapper {
     display: flex;
     position: relative;
-
     width: 100%;
+
     .suffix-overlay {
       position: absolute;
       display: flex;

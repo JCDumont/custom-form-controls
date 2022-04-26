@@ -4,16 +4,16 @@
   [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
   [class.focused]="focused">
 
-  <label for="">
+  <label [for]="formId">
     {{ label }}
   </label>
 
   <section class="input">
-
     <div class="input-wrapper">
       <textarea
         #input
         type="text"
+        [id]="formId"
         [formControl]="formControl"
         [disabled]="disabled"
         (keyup)="writeValue($event.target.value, true)"

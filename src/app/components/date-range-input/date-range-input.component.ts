@@ -1,9 +1,9 @@
-import { Component, forwardRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatDateRangePicker } from '@angular/material/datepicker';
-import * as moment from 'moment';
-import { Moment } from 'moment';
-import { Subscription } from 'rxjs';
+// import { Component, forwardRef, OnChanges, OnInit } from '@angular/core';
+// import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+// import { CustomFormControl } from 'src/app/components/base/base-form-input';
+
+import { Component, forwardRef, Input } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomFormControl } from 'src/app/components/base/base-form-input';
 
 @Component({
@@ -13,110 +13,128 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: forwardRef(() => DateRangeInputComponent)
+      useExisting: forwardRef(() => DateRangeInputComponent),
+      multi: true
     }
   ]
 })
-export class DateRangeInputComponent extends CustomFormControl implements OnInit, OnChanges {
+export class DateRangeInputComponent extends CustomFormControl implements ControlValueAccessor {
 
-  @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;
-
-
-  @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;
-
-  @Input() formControl: FormGroup = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl(),
-  });
-
-  formControlValueChanges: Subscription;
-
-  get startControl (): FormControl {
-    return this.formControl.get('start') as FormControl;
-  }
-
-  get endControl (): FormControl {
-    return this.formControl.get('end') as FormControl;
-  }
+  @Input() random;
 
   constructor() {
     super();
+
+    console.log(this.registerOnChange);
+    console.log(this.formControl);
   }
 
-  ngOnInit(): void {
-    console.log(this.value);
-    this.listenToFormControlChanges();
-  }
-
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if( changes.formControl ) {
-      this.listenToFormControlChanges();
-    }
-  }
-
-  writeValue( value: any, inputChange: boolean = false ): void {
-    console.log('In this bit', value);
-    this.value = value;
-
-    if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {
-      this.formControl.patchValue(value, { emitEvent: false });
-    }
-
-    // On want to trigger on change if it is not a form control
-
-    console.log(this.onChange);
-    console.log({value});
-    this.onChange?.(value);
-  }
-
-  openEndDatePicker( startDate: Moment ): void {
-    this.endDatePicker.open();
-    console.log(startDate);
-    console.log(this.endDatePicker);
-    this.endDatePicker.select(moment(startDate));
-    setTimeout(() => {
-      this.endDatePicker._applyPendingSelection();
-
-    })
-  }
-
-  updateValue(event, area) {
-    this.value = {
-      ...this.value,
-      [area]: event,
-    }
-
-    console.log(area);
-    console.log(event);
-
-    if ( area === 'start' ) {
-      this.startDatePicker.close();
-      this.openEndDatePicker(event);
-    }
-
-    console.log(this.value);
-    if ( this.value.end && this.value.start ) {
-      this.writeValue(this.value);
-    }
-
-  }
-
-  listenToFormControlChanges (): void {
-    this.formControlValueChanges?.unsubscribe();
-
-    // this.formControlValueChanges = this.formControl
-    //   .valueChanges
-    //   .pipe(
-    //     skipWhile((val) => !val.start || !val.end )
-    //   )
-    //   .subscribe({
-    //     next: ( val ) => {
-
-    //       this.writeValue(val, true);
-    //       console.log(val);
-    //     }
-    //   });
-  }
 }
+//   // @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;
+
+
+//   // @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;
+
+//   // @Input() formControl: FormGroup = new FormGroup({
+//   //   start: new FormControl(),
+//   //   end: new FormControl(),
+//   // });
+
+//   // formControlValueChanges: Subscription;
+
+//   // get startControl (): FormControl {
+//   //   return this.formControl.get('start') as FormControl;
+//   // }
+
+//   // get endControl (): FormControl {
+//   //   return this.formControl.get('end') as FormControl;
+//   // }
+
+
+//   // controlsEnd = new FormGroup({
+//   //   start: new FormControl(),
+//   //   end: new FormControl(),
+//   // });
+
+//   // controlsStart = new FormGroup({
+//   //   start: new FormControl(),
+//   //   end: new FormControl(),
+//   // });
+
+
+//   // constructor() {
+//   //   super();
+//   // }
+
+//   // ngOnInit(): void {
+//   //   // this.listenToFormControlChanges();
+//   // }
+
+
+//   // ngOnChanges(changes: SimpleChanges): void {
+//   //   if( changes.formControl ) {
+//   //     // this.listenToFormControlChanges();
+//   //   }
+//   // }
+
+//   // // writeValue( value: any, inputChange: boolean = false ): void {
+//   // //   console.log('In this bit', value);
+//   // //   this.value = value;
+
+//   // //   if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {
+//   // //     this.formControl.patchValue(value, { emitEvent: false });
+//   // //   }
+
+//   // //   // On want to trigger on change if it is not a form control
+
+//   // //   console.log(this.onChange);
+//   // //   console.log({value});
+//   // //   this.onChange?.(value);
+//   // // }
+
+//   // openEndDatePicker( startDate: Moment ): void {
+//   //   this.endDatePicker.open();
+//   //   this.endDatePicker.select(moment(startDate));
+//   //   setTimeout(() => {
+//   //     // this.endDatePicker._applyPendingSelection();
+//   //   })
+//   // }
+
+//   // updateValue(event, area) {
+//   //   this.value = {
+//   //     ...this.value,
+//   //     [area]: event,
+//   //   }
+
+//   //   if ( area === 'start' ) {
+//   //     this.startDatePicker.close();
+//   //     this.openEndDatePicker(event);
+//   //   }
+
+//   //   if ( this.value.end && this.value.start ) {
+//   //     // this.writeValue(this.value);
+//   //   }
+
+//   // }
+
+//   // listenToFormControlChanges (): void {
+//   //  //  this.formControlValueChanges?.unsubscribe();
+
+//   //   // this.formControlValueChanges = this.formControl
+//   //   //   .valueChanges
+//   //   //   .pipe(
+//   //   //     skipWhile((val) => !val.start || !val.end )
+//   //   //   )
+//   //   //   .subscribe({
+//   //   //     next: ( val ) => {
+
+//   //   //       this.writeValue(val, true);
+//   //   //       console.log(val);
+//   //   //     }
+//   //   //   });
+//   // }
+
+//   // test(): void {
+
+//   // }
+// }

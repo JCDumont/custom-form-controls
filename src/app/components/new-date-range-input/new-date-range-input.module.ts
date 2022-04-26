@@ -5,13 +5,13 @@ import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/m
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { DateRangeInputComponent } from './date-range-input.component';
+import { NewDateRangeInputComponent } from './new-date-range-input.component';
 
 
 
 @NgModule({
   declarations: [
-    DateRangeInputComponent
+    NewDateRangeInputComponent
   ],
   imports: [
     CommonModule,
@@ -19,14 +19,11 @@ import { DateRangeInputComponent } from './date-range-input.component';
     ReactiveFormsModule,
     MatDatepickerModule,
     MatFormFieldModule,
-    MatMomentDateModule,
-  ],
-  exports: [
-    DateRangeInputComponent,
+    MatMomentDateModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
     {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}
   ]
 })
-export class DateRangeInputModule { }
+export class NewDateRangeInputModule { }

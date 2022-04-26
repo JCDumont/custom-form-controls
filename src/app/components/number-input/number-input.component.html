@@ -5,7 +5,7 @@
     [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
 >
 
-  <label for="">
+  <label [for]="formId">
     {{ label }}
   </label>
 
@@ -21,6 +21,7 @@
         type="text"
         [formControl]="formControl"
         [disabled]="disabled"
+        [id]="formId"
         (keyup)="writeValue($event.target.value, true)"
         (keydown)="checkInput($event)"
         (focus)="onTouched(); focused = true"

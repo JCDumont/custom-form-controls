@@ -20,8 +20,6 @@ export class SelectInputComponent extends CustomFormControl implements OnInit, O
 
   @ViewChild( 'select', { static: false }) selectReference: NgSelectComponent;
 
-
-
   // Display based variables
   @Input() bindValue: string = 'id';
   @Input() bindLabel: string = 'description';
@@ -30,17 +28,24 @@ export class SelectInputComponent extends CustomFormControl implements OnInit, O
   @Input() closeDropdownOnSelect: boolean = true;
   @Input() labelFormatter: ( item: any ) => string;
 
+  // Grouping handlers
+  @Input() groupedList: boolean = false;
+  @Input() groupName: string;
+  @Input() groupByFn: (value) => string;
+  @Input() groupValueFn: (string) => string = (groupHeading: string) => {
+    return groupHeading;
+  }
+
   // Input method variables
   @Input() multiSelect: boolean = false;
+  @Input() checkBoxSelect: boolean = false;
   @Input() clearable: boolean = true;
   @Input() useFirstValueAsDefault: boolean = false;
-
 
   // Dropdown impacting variables
   @Input() dropdownPosition: DropdownPosition = 'auto';
   @Input() dropdownWidth: string;
   @Input() selectOptions: any[] = [];
-
 
   // Outputs
   @Output() removeRow: EventEmitter<void> = new EventEmitter<void>();
@@ -69,7 +74,6 @@ export class SelectInputComponent extends CustomFormControl implements OnInit, O
     });
 
     if ( this.multiSelect ) {
-
       const filteredValue = this.formControl.value
         .filter((value) =>{
           return optionChecker(value);

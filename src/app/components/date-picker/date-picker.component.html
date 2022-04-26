@@ -3,7 +3,7 @@
   [class.disabled]="disabled"
   [class.focused]="focused">
 
-  <label for="">
+  <label [for]="formId">
     {{ label }}
   </label>
 
@@ -12,6 +12,8 @@
     <div class="input-wrapper">
       <input
         #input
+        autocomplete="off"
+        [id]="formId"
         matInput
         [matDatepicker]="picker"
         type="text"

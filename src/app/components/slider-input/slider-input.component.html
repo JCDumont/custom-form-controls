@@ -6,7 +6,7 @@
   [class.invalid]="formControl?.invalid && (formControl.touched || submitAttempt)"
   [class.focused]="focused && !disabled">
 
-  <label *ngIf="showLabel" for="">
+  <label *ngIf="showLabel" [for]="formId">
     {{ label }}
   </label>
 
@@ -15,6 +15,7 @@
     <div class="input-wrapper">
       <mat-slider
         #slider
+        [id]="formId"
         class="custom-mat-slider"
         [disabled]="disabled"
         [formControl]="formControl"

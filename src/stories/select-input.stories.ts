@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { moduleMetadata, Story } from '@storybook/angular';
 import { SelectInputComponent } from 'src/app/components/select-input/select-input.component';
+import { showToolTipDirective } from 'src/app/directives/showTooltip';
+import { HighlightDirective } from 'src/app/directives/string-highlight';
 
 
 const fieldsToNotIncludeOptions = [ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]
@@ -49,6 +52,9 @@ export default {
     fieldDisabledOverride: {
       control: { type: 'boolean' }
     },
+    loading: {
+      control: { type: 'boolean' }
+    },
     submitAttempt: {
       control: { type: 'boolean' }
     },
@@ -56,6 +62,10 @@ export default {
   },
   decorators: [
     moduleMetadata({
+      declarations: [
+        showToolTipDirective,
+        HighlightDirective,
+      ],
       imports: [
         BrowserAnimationsModule,
         CommonModule,
@@ -63,6 +73,7 @@ export default {
         ReactiveFormsModule,
         NgSelectModule,
         MatTooltipModule,
+        MatCheckboxModule,
       ]
     })
   ],
@@ -200,3 +211,26 @@ ValidateSelection.args = {
   formControl: invalidSelection
 }
 
+export const CheckBoxSelect = Template.bind({});
+CheckBoxSelect.args = {
+  ...Default.args,
+  checkBoxSelect: true,
+  multiSelect: true,
+};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  ...Default.args,
+  loading: true,
+};
+
+
+export const GroupedSelect = Template.bind({});
+GroupedSelect.args = {
+  ...Default.args,
+  groupName: 'name',
+  groupedList: true,
+  bindLabel: 'id',
+  groupValueFn: ( item ) => item,
+  selectOptions: [{ id: 1, name: 'Hello' }, { id: 2, name: 'Test'}, { id: 3, name: 'Hello'} ]
+};

@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnInit } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CustomFormControl } from 'src/app/components/base/base-form-input';
 
@@ -14,13 +14,10 @@ import { CustomFormControl } from 'src/app/components/base/base-form-input';
     }
   ]
 })
-export class TextAreaComponent extends CustomFormControl implements OnInit, ControlValueAccessor {
+export class TextAreaComponent extends CustomFormControl implements ControlValueAccessor {
 
   constructor() {
     super();
    }
-
-  ngOnInit(): void {
-  }
 
 }

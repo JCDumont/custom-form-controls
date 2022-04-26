@@ -1,0 +1,139 @@
+.date-range-inputs {
+
+  label.focused-area {
+    color: var(--focused-label-color) !important;
+  }
+  > .input {
+    border: none !important;
+    background: none !important;
+    margin-bottom: 0;
+
+    > .input-wrapper {
+      flex-wrap: wrap;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+      min-width: 400px;
+      flex: 1;
+      margin-bottom: 12px;
+      transition: all 0.175s ease-in-out;
+
+
+      .input-wrapper {
+        position: relative;
+        background: white;
+        border: solid 1px var(--default-input-border);
+        border-radius: 4px;
+        padding: 6px 8px;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+        flex-wrap: nowrap !important;
+        outline: solid 2px transparent;
+
+        input {
+          width: 100%;
+        }
+        button {
+          background: none;
+          outline: none;
+          border: none;
+
+          i {
+            color: #333;
+            transition: all 0.175s ease-in-out;
+          }
+
+          &:hover {
+            cursor: pointer;
+            i {
+              color: var(--form-input-color);
+            }
+          }
+
+          &:focus {
+            i {
+              color: var(--form-input-color);
+            }
+          }
+        }
+      }
+
+      &.focused {
+        label {
+          color: var(--focused-label-color) !important;
+        }
+
+        .input-wrapper {
+          outline: solid 2px var(--outline-color);
+          border-color: var(--focused-input-border);
+        }
+      }
+
+      &.invalid {
+
+        .input-wrapper {
+          border: solid 1px var(--error);
+
+          transition: all 0.175s ease-in-out;
+          outline: solid 2px var(--error-600);
+        }
+
+        &.focused {
+          .input-wrapper {
+            outline-color: var(--error);
+          }
+        }
+      }
+
+      &.disabled {
+        .input-wrapper {
+          box-shadow: none;
+          background: rgba(0, 0, 0, 0.04);
+          border: solid 1px rgba( 0, 0, 0, 0.15);
+          color: rgba( 0, 0, 0, 0.8);
+
+          button {
+            &:hover,
+            &:focus {
+              cursor: auto;
+              i {
+                color: #333 !important;
+              }
+            }
+          }
+        }
+      }
+
+      > label {
+        margin-right: 8px;
+        font-size: 14px;
+        text-align: right;
+        min-width: 30px;
+      }
+    }
+
+  }
+}
+
+.errors {
+  margin-top: -12px;
+}
+
+
+
+// Hide the actual date range input
+mat-date-range-input {
+  height: 0;
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  bottom: 0;
+  overflow: hidden;
+
+  .mat-date-range-input-container {
+    height: 0 !important;
+  }
+}

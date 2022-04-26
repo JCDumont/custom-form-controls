@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SelectInputComponent } from './select-input.component';
@@ -17,6 +18,7 @@ import { SelectInputComponent } from './select-input.component';
     ReactiveFormsModule,
     NgSelectModule,
     MatTooltipModule,
+    MatCheckboxModule
   ],
   exports: [
     SelectInputComponent,

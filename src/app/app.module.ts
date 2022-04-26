@@ -11,11 +11,15 @@ import { SliderInputModule } from 'src/app/components/slider-input/slider-input.
 import { TextAreaModule } from 'src/app/components/text-area/text-area.module';
 import { TextInputModule } from 'src/app/components/text-input/text-input.module';
 import { ToggleSlideModule } from 'src/app/components/toggle-slide/toggle-slide.module';
+import { showToolTipDirective } from 'src/app/directives/showTooltip';
+import { HighlightDirective } from 'src/app/directives/string-highlight';
 import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    showToolTipDirective,
+    HighlightDirective,
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,8 @@ import { AbstractControl, ControlValueAccessor, FormControl } from '@angular/for
 @Directive()
 export class CustomFormControl implements OnInit, OnChanges, ControlValueAccessor {
 
+  readonly formId: string = `${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`;
+
   @Input() formControl: AbstractControl = new FormControl();
 
   @Input() label: string;
@@ -21,6 +23,8 @@ export class CustomFormControl implements OnInit, OnChanges, ControlValueAccesso
   @Input() submitAttempt: boolean = false;
 
   @Input() defaultValue: any;
+
+  @Input() loading: boolean = false;
 
   @Input() customErrorMessages: Record<string, string | (() => string)>
 
@@ -95,18 +99,23 @@ export class CustomFormControl implements OnInit, OnChanges, ControlValueAccesso
 
   setDisabledState(isDisabled: boolean): void {
 
-    if ( this.fieldDisabledOverride ) {
-      this.disabled = true;
-      this.formControl.disable();
-      return;
-    }
+    console.log(isDisabled);
+    console.log(this.formControl.disabled);
+
+    // if ( this.fieldDisabledOverride ) {
+    //   this.disabled = true;
+    //   this.formControl.disable();
+    //   return;
+    // }
 
     this.disabled = isDisabled;
-    if (isDisabled === this.formControl.disabled) {
-      return;
-     }
+    // if (isDisabled === this.formControl.disabled) {
+    //   return;
+    //  }
 
+    console.log(this.disabled);
     if ( this.disabled ) {
+
       this.formControl.disable();
     } else {
       this.formControl.enable();
