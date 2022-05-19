@@ -5,7 +5,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { moduleMetadata, Story } from '@storybook/angular';
-import { FiveDayRangeSelectionStrategy, NewDateRangeInputComponent, SelectedDateState } from 'src/app/components/new-date-range-input/new-date-range-input.component';
+import { FiveDayRangeSelectionStrategy, NewDateRangeInputComponent, SelectedDateState } from 'src/app/components/date-range-input/new-date-range-input.component';
 
 
 const fieldsToNotIncludeOptions = [ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]

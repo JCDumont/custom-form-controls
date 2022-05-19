@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DateRangeInputComponent } from './date-range-input.component';
+import { AcuButtonComponent } from './acu-button.component';
 
-describe('DateRangeInputComponent', () => {
-  let component: DateRangeInputComponent;
-  let fixture: ComponentFixture<DateRangeInputComponent>;
+describe('AcuButtonComponent', () => {
+  let component: AcuButtonComponent;
+  let fixture: ComponentFixture<AcuButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DateRangeInputComponent ]
+      declarations: [ AcuButtonComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DateRangeInputComponent);
+    fixture = TestBed.createComponent(AcuButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

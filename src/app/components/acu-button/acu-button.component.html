@@ -1,0 +1,17 @@
+<button
+  [class]="'button ' + appearance + ' ' + color"
+  [ngClass]="{
+    disabled: disabled
+  }"
+  (click)="buttonClicked.emit()">
+  {{ label }}
+</button>
+
+<a
+  [class]="'button ' + appearance + ' ' + color"
+  [ngClass]="{
+    disabled: disabled
+  }"
+  href="">
+  {{ label }}
+</a>

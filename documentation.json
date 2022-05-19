@@ -5,7 +5,7 @@
         {
             "name": "FiveDayRangeSelectionStrategy",
             "id": "injectable-FiveDayRangeSelectionStrategy-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
-            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "file": "src/app/components/date-range-input/new-date-range-input.component.ts",
             "properties": [],
             "methods": [
                 {
@@ -147,7 +147,7 @@
         {
             "name": "SelectedDateState",
             "id": "injectable-SelectedDateState-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
-            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "file": "src/app/components/date-range-input/new-date-range-input.component.ts",
             "properties": [
                 {
                     "name": "dateValue",
@@ -900,6 +900,139 @@
     ],
     "components": [
         {
+            "name": "AcuButtonComponent",
+            "id": "component-AcuButtonComponent-14c3d85e713c9b0cf97c3f0cc94a40121a3f5f9032930c80f5c583dfdaef581278e10f4355c34beccdefcc4e13913025e993aecf5fe2bdf14fe6b5dd418ce570",
+            "file": "src/app/components/acu-button/acu-button.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-acu-button",
+            "styleUrls": [
+                "./acu-button.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./acu-button.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "appearance",
+                    "defaultValue": "'fill'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 14,
+                    "type": "\"outline\" | \"fill\" | \"icon\" | \"text\"",
+                    "decorators": []
+                },
+                {
+                    "name": "color",
+                    "defaultValue": "'primary'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 16,
+                    "type": "\"primary\" | \"accent\" | \"basic\" | \"link\" | \"success\" | \"warn\" | \"text\"",
+                    "decorators": []
+                },
+                {
+                    "name": "disabled",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 18,
+                    "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "icon",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 12,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "isNavigationButton",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 22,
+                    "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "label",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 10,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "loading",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 20,
+                    "type": "boolean",
+                    "decorators": []
+                }
+            ],
+            "outputsClass": [
+                {
+                    "name": "buttonClicked",
+                    "defaultValue": "new EventEmitter<void>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 24,
+                    "type": "EventEmitter<void>"
+                }
+            ],
+            "propertiesClass": [],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 28,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';\n\n@Component({\n  selector: 'app-acu-button',\n  templateUrl: './acu-button.component.html',\n  styleUrls: ['./acu-button.component.scss']\n})\nexport class AcuButtonComponent implements OnInit {\n\n  @Input() label: string;\n\n  @Input() icon: string;\n\n  @Input() appearance: 'outline' | 'fill' | 'icon' | 'text' = 'fill';\n\n  @Input() color: 'primary' | 'accent' | 'basic' | 'link' | 'success' | 'warn' | 'text' = 'primary';\n\n  @Input() disabled: boolean = false;\n\n  @Input() loading: boolean = false;\n\n  @Input() isNavigationButton: boolean = false;\n\n  @Output() buttonClicked: EventEmitter<void> = new EventEmitter<void>();\n\n  constructor() { }\n\n  ngOnInit(): void {\n  }\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".button {\r\n  --button-background: var(--primary);\r\n  --button-color: white;\r\n  --button-outline: transparent;\r\n\r\n  &.accent {\r\n    --button-background: var(--accent);\r\n    --button-color: white;\r\n\r\n    &:hover,\r\n    &:focus {\r\n      --button-outline: var(--accent);\r\n    }\r\n  }\r\n\r\n  &.link {\r\n    --button-background: var(--link);\r\n    --button-color: white;\r\n\r\n    &:hover,\r\n    &:focus {\r\n      --button-outline: var(--link);\r\n    }\r\n  }\r\n\r\n\r\n  &.text {\r\n    --button-background: var(--text);\r\n    --button-color: white;\r\n\r\n    &:hover,\r\n    &:focus {\r\n      --button-outline: var(--text);\r\n    }\r\n  }\r\n\r\n  height: 40px;\r\n  padding: 0 12px;\r\n  text-decoration: none;\r\n  border-radius: 4px;\r\n  background-color: var(--button-background);\r\n  color: var(--button-color);\r\n  display: inline-flex;\r\n  column-gap: 4px;\r\n  align-items: center;\r\n  font-size: 16px;\r\n  line-height: 1;\r\n  outline: none;\r\n  border: solid 2px transparent;\r\n  transition: all 0.175s ease-out;\r\n  position: relative;\r\n  z-index: 2;\r\n  margin: 5px;\r\n\r\n  &:before {\r\n    content: '';\r\n    width: calc(100% + 4px);\r\n    height: calc(100% + 4px);\r\n    top: -4px;\r\n    z-index: -1;\r\n    left: -4px;\r\n    background-color: var(--button-background);\r\n    border: solid 2px var(--button-background);\r\n    border-radius: 4px;\r\n    opacity: 0;\r\n    position: absolute;\r\n    transition: all .175s ease-out;\r\n  }\r\n\r\n  &:hover {\r\n    cursor: pointer;\r\n  }\r\n\r\n  &:hover,\r\n  &:focus {\r\n\r\n    &:before {\r\n      opacity: 0.5;\r\n    }\r\n  }\r\n\r\n\r\n  // Disabled colour\r\n  &.disabled {\r\n    --button-background: gray;\r\n    --button-color: var(--text);\r\n\r\n    &:hover,\r\n    &:focus {\r\n      &:before {\r\n        opacity: 0 !important;\r\n      }\r\n    }\r\n  }\r\n\r\n\r\n\r\n  &.outline {\r\n    background: transparent;\r\n    border: solid 1px var(--button-background);\r\n    --button-color: var(--button-background);\r\n\r\n\r\n    &.accent {\r\n      border-color: var(--button-background);\r\n    }\r\n\r\n    &:hover,\r\n    &:focus {\r\n\r\n      &:before {\r\n        background-color: none;\r\n        opacity: 0 !important;\r\n        border: none;\r\n      }\r\n      background-color: rgba( 0, 0, 0, 0.04);\r\n    }\r\n  }\r\n\r\n  &.text {\r\n    --button-background: transparent;\r\n    --button-color: var(--primary);\r\n    text-transform: uppercase;\r\n\r\n\r\n    &.link {\r\n      --button-color: var(--link);\r\n    }\r\n\r\n    &.accent {\r\n      --button0color: var(--accent);\r\n    }\r\n\r\n    &.text {\r\n      --button0color: var(--text);\r\n    }\r\n\r\n    &:hover,\r\n    &:focus {\r\n      background-color: rgba( 0, 0, 0, 0.04);\r\n    }\r\n  }\r\n\r\n}\r\n",
+                    "styleUrl": "./acu-button.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [],
+                "line": 24
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "templateData": "<button\n  [class]=\"'button ' + appearance + ' ' + color\"\n  [ngClass]=\"{\n    disabled: disabled\n  }\"\n  (click)=\"buttonClicked.emit()\">\n  {{ label }}\n</button>\n\n<a\n  [class]=\"'button ' + appearance + ' ' + color\"\n  [ngClass]=\"{\n    disabled: disabled\n  }\"\n  href=\"\">\n  {{ label }}\n</a>\n"
+        },
+        {
             "name": "AppComponent",
             "id": "component-AppComponent-052936fa35e309108fd0d629a51634f2433d652d520fe7422ca2844498049e5016e9007664eb0e5a36734dc2dc190c05638d2ade34a62caf33a6c08faf03a3bb",
             "file": "src/app/app.component.ts",
@@ -1637,515 +1770,6 @@
             "templateData": "<section\n  class=\"form-input\"\n  [class.disabled]=\"disabled\"\n  [class.focused]=\"focused\">\n\n  <label [for]=\"formId\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n\n    <div class=\"input-wrapper\">\n      <input\n        #input\n        autocomplete=\"off\"\n        [id]=\"formId\"\n        matInput\n        [matDatepicker]=\"picker\"\n        type=\"text\"\n        [formControl]=\"formControl\"\n        [disabled]=\"disabled\"\n        (dateInput)=\"writeValue($event.value, true)\"\n        (focus)=\"focused = true\"\n        (blur)=\"onTouched(); focused = false\">\n\n        <button\n          (click)=\"picker.open()\"\n          [disabled]=\"disabled\"\n          class=\"date-picker-icon\">\n          <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n        </button>\n\n    </div>\n\n    <mat-datepicker #picker></mat-datepicker>\n\n  </section>\n\n</section>\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n\n\n<section\n  *ngIf=\"debug\"\n  class=\"debug-items\">\n\n\n  <div class=\"data-item\">\n    <p>Value</p>\n    <p>{{ formControl.value || value }}</p>\n  </div>\n\n</section>\n"
         },
         {
-            "name": "DateRangeInputComponent",
-            "id": "component-DateRangeInputComponent-be7cd14b01a780fa1253866839f202998d1bbf54c4ded1ae3b342fb5e1a69daf1356d19b6a524c70622700fd4c9961ae56c50d6deafb0582082a0641764a0e2e",
-            "file": "src/app/components/date-range-input/date-range-input.component.ts",
-            "encapsulation": [],
-            "entryComponents": [],
-            "inputs": [],
-            "outputs": [],
-            "providers": [
-                {
-                    "name": "{\n    provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => DateRangeInputComponent), multi: true\n}",
-                    "type": "component"
-                }
-            ],
-            "selector": "app-date-range-input",
-            "styleUrls": [
-                "./date-range-input.component.scss"
-            ],
-            "styles": [],
-            "templateUrl": [
-                "./date-range-input.component.html"
-            ],
-            "viewProviders": [],
-            "inputsClass": [
-                {
-                    "name": "random",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 23,
-                    "type": "any",
-                    "decorators": []
-                },
-                {
-                    "name": "customErrorMessages",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 29,
-                    "type": "Record<string | string | >",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "debug",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 31,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "defaultValue",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 25,
-                    "type": "any",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "disabled",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 13,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "fieldDisabledOverride",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 15,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "formControl",
-                    "defaultValue": "new FormControl()",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 9,
-                    "type": "AbstractControl",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "label",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 11,
-                    "type": "string",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "loading",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 27,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "prefix",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 17,
-                    "type": "string",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "showLabel",
-                    "defaultValue": "true",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 21,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "submitAttempt",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 23,
-                    "type": "boolean",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "suffix",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "line": 19,
-                    "type": "string",
-                    "decorators": [],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                }
-            ],
-            "outputsClass": [],
-            "propertiesClass": [
-                {
-                    "name": "customFormControl",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "boolean",
-                    "optional": false,
-                    "description": "",
-                    "line": 47,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "focused",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "boolean",
-                    "optional": false,
-                    "description": "",
-                    "line": 43,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "formId",
-                    "defaultValue": "`${Math.floor(Math.random() * Math.floor(Math.random() * Date.now()))}`",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "string",
-                    "optional": false,
-                    "description": "",
-                    "line": 7,
-                    "modifierKind": [
-                        144
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "onChange",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "function",
-                    "optional": false,
-                    "description": "",
-                    "line": 33,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "onTouched",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "function",
-                    "optional": false,
-                    "description": "",
-                    "line": 35,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "showToolTip",
-                    "defaultValue": "() => {...}",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "function",
-                    "optional": false,
-                    "description": "",
-                    "line": 39,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "tooltipEnabled",
-                    "defaultValue": "false",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "boolean",
-                    "optional": false,
-                    "description": "",
-                    "line": 37,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "value",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "any",
-                    "optional": false,
-                    "description": "",
-                    "line": 45,
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                }
-            ],
-            "methodsClass": [
-                {
-                    "name": "ngOnChanges",
-                    "args": [
-                        {
-                            "name": "changes",
-                            "type": "SimpleChanges",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 56,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "changes",
-                            "type": "SimpleChanges",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "ngOnInit",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 50,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "onBlur",
-                    "args": [],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 87,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "registerOnChange",
-                    "args": [
-                        {
-                            "name": "fn",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 79,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "fn",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "registerOnTouched",
-                    "args": [
-                        {
-                            "name": "fn",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 83,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "fn",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "setDisabledState",
-                    "args": [
-                        {
-                            "name": "isDisabled",
-                            "type": "boolean",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 100,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "isDisabled",
-                            "type": "boolean",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                },
-                {
-                    "name": "writeValue",
-                    "args": [
-                        {
-                            "name": "value",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": ""
-                        },
-                        {
-                            "name": "inputChange",
-                            "type": "boolean",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "defaultValue": "false"
-                        }
-                    ],
-                    "optional": false,
-                    "returnType": "void",
-                    "typeParameters": [],
-                    "line": 62,
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "jsdoctags": [
-                        {
-                            "name": "value",
-                            "type": "any",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        },
-                        {
-                            "name": "inputChange",
-                            "type": "boolean",
-                            "deprecated": false,
-                            "deprecationMessage": "",
-                            "defaultValue": "false",
-                            "tagName": {
-                                "text": "param"
-                            }
-                        }
-                    ],
-                    "inheritance": {
-                        "file": "CustomFormControl"
-                    }
-                }
-            ],
-            "deprecated": false,
-            "deprecationMessage": "",
-            "hostBindings": [],
-            "hostListeners": [],
-            "description": "",
-            "rawdescription": "\n",
-            "type": "component",
-            "sourceCode": "import { Component, forwardRef, Input } from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CustomFormControl } from 'src/app/components/base/base-form-input';\n\n@Component({\n  selector: 'app-date-range-input',\n  templateUrl: './date-range-input.component.html',\n  styleUrls: ['./date-range-input.component.scss'],\n  providers: [\n    {\n      provide: NG_VALUE_ACCESSOR,\n      useExisting: forwardRef(() => DateRangeInputComponent),\n      multi: true\n    }\n  ]\n})\nexport class DateRangeInputComponent extends CustomFormControl implements ControlValueAccessor {\n\n  @Input() random;\n\n  constructor() {\n    super();\n\n    console.log(this.registerOnChange);\n    console.log(this.formControl);\n  }\n\n}\n//   // @ViewChild( 'picker', { static: false }) startDatePicker: MatDateRangePicker<any>;\n\n\n//   // @ViewChild( 'picker2', { static: false }) endDatePicker: MatDateRangePicker<any>;\n\n//   // @Input() formControl: FormGroup = new FormGroup({\n//   //   start: new FormControl(),\n//   //   end: new FormControl(),\n//   // });\n\n//   // formControlValueChanges: Subscription;\n\n//   // get startControl (): FormControl {\n//   //   return this.formControl.get('start') as FormControl;\n//   // }\n\n//   // get endControl (): FormControl {\n//   //   return this.formControl.get('end') as FormControl;\n//   // }\n\n\n//   // controlsEnd = new FormGroup({\n//   //   start: new FormControl(),\n//   //   end: new FormControl(),\n//   // });\n\n//   // controlsStart = new FormGroup({\n//   //   start: new FormControl(),\n//   //   end: new FormControl(),\n//   // });\n\n\n//   // constructor() {\n//   //   super();\n//   // }\n\n//   // ngOnInit(): void {\n//   //   // this.listenToFormControlChanges();\n//   // }\n\n\n//   // ngOnChanges(changes: SimpleChanges): void {\n//   //   if( changes.formControl ) {\n//   //     // this.listenToFormControlChanges();\n//   //   }\n//   // }\n\n//   // // writeValue( value: any, inputChange: boolean = false ): void {\n//   // //   console.log('In this bit', value);\n//   // //   this.value = value;\n\n//   // //   if (JSON.stringify(value) !== JSON.stringify(this.formControl.value) && !inputChange) {\n//   // //     this.formControl.patchValue(value, { emitEvent: false });\n//   // //   }\n\n//   // //   // On want to trigger on change if it is not a form control\n\n//   // //   console.log(this.onChange);\n//   // //   console.log({value});\n//   // //   this.onChange?.(value);\n//   // // }\n\n//   // openEndDatePicker( startDate: Moment ): void {\n//   //   this.endDatePicker.open();\n//   //   this.endDatePicker.select(moment(startDate));\n//   //   setTimeout(() => {\n//   //     // this.endDatePicker._applyPendingSelection();\n//   //   })\n//   // }\n\n//   // updateValue(event, area) {\n//   //   this.value = {\n//   //     ...this.value,\n//   //     [area]: event,\n//   //   }\n\n//   //   if ( area === 'start' ) {\n//   //     this.startDatePicker.close();\n//   //     this.openEndDatePicker(event);\n//   //   }\n\n//   //   if ( this.value.end && this.value.start ) {\n//   //     // this.writeValue(this.value);\n//   //   }\n\n//   // }\n\n//   // listenToFormControlChanges (): void {\n//   //  //  this.formControlValueChanges?.unsubscribe();\n\n//   //   // this.formControlValueChanges = this.formControl\n//   //   //   .valueChanges\n//   //   //   .pipe(\n//   //   //     skipWhile((val) => !val.start || !val.end )\n//   //   //   )\n//   //   //   .subscribe({\n//   //   //     next: ( val ) => {\n\n//   //   //       this.writeValue(val, true);\n//   //   //       console.log(val);\n//   //   //     }\n//   //   //   });\n//   // }\n\n//   // test(): void {\n\n//   // }\n// }\n",
-            "assetsDirs": [],
-            "styleUrlsData": [
-                {
-                    "data": ".input-wrapper {\r\n  align-items: center;\r\n  width: 100%;\r\n  flex-wrap: wrap;\r\n  gap: 10px;\r\n\r\n\r\n  button {\r\n    background: none;\r\n    outline: none;\r\n    border: none;\r\n\r\n    i {\r\n      color: #333;\r\n      transition: all 0.175s ease-in-out;\r\n    }\r\n\r\n    &:hover {\r\n      cursor: pointer;\r\n\r\n      i {\r\n        color: var(--outline-color);\r\n      }\r\n    }\r\n  }\r\n}\r\n\r\n.input {\r\n  border: none !important;\r\n}\r\n\r\n.input-container {\r\n  display: flex;\r\n  align-items: center;\r\n  min-width: 200px;\r\n  flex: 1;\r\n\r\n\r\n  .input-wrapper {\r\n    border: solid 1px var(--label-colour);\r\n    border-radius: 4px;\r\n    padding: 6px 8px;\r\n    flex-wrap: nowrap !important;\r\n  }\r\n\r\n  // + .input-container {\r\n  //   margin-left: 10px;\r\n  // }\r\n\r\n  > p {\r\n    margin-right: 8px;\r\n    font-size: 14px;\r\n    text-align: right;\r\n    min-width: 30px;\r\n  }\r\n}\r\n",
-                    "styleUrl": "./date-range-input.component.scss"
-                }
-            ],
-            "stylesData": "",
-            "constructorObj": {
-                "name": "constructor",
-                "description": "",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "args": [],
-                "line": 23
-            },
-            "extends": "CustomFormControl",
-            "implements": [
-                "ControlValueAccessor"
-            ],
-            "templateData": "\n\nhello\n\n\n<!--\n  section\n  class=\"form-input\">\n\n  <label for=\"\">\n    {{ label }}\n  </label>\n\n  <section class=\"input\">\n    <div class=\"input-wrapper\">\n\n      <div class=\"input-container\"\n      [class.disabled]=\"disabled\"\n      [class.focused]=\"input?.focused\">\n        <p>\n          From\n        </p>\n\n        <div class=\"input-wrapper\">\n          <input\n            #input\n            type=\"text\"\n            [ngModel]=\"value.start | date: 'dd/MM/yyyy'\"\n            (ngModelChange)=\"test()\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"focused = true\"\n            (blur)=\"focused = false\">\n\n            <mat-date-range-input\n              [formGroup]=\"controlsStart\"\n              [max]=\"value.end\"\n              style=\"opacity: 0; height: 0; width: 0;\"\n              [rangePicker]=\"picker\">\n              <input  (dateInput)=\"updateValue($event.value, 'start')\" formControlName=\"start\" matStartDate type=\"text\">\n              <input  formControlName=\"end\" matEndDate disabled readonly type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker #picker></mat-date-range-picker>\n\n             <button\n              (click)=\"picker.open()\"\n              [disabled]=\"disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n\n        </div>\n\n      </div>\n\n\n\n\n\n      <section class=\"input-container\"\n        [class.disabled]=\"disabled\"\n        [class.focused]=\"input2?.focused\">\n\n        <p>\n          To\n        </p>\n\n        <div class=\"input-wrapper\">\n\n          <input\n            #input2\n            type=\"text\"\n            [ngModel]=\"value.end | date : 'dd/MM/yyyy'\"\n            (ngModelChange)=\"test()\"\n            [ngModelOptions]=\"{standalone: true}\"\n            [disabled]=\"disabled\"\n            (focus)=\"focused = true\"\n            (blur)=\"focused = false\">\n\n            <mat-date-range-input\n            [formGroup]=\"controlsEnd\"\n              [min]=\"value.start\"\n              style=\"opacity: 0;  height: 0; width: 0;\" [rangePicker]=\"picker2\">\n              <input formControlName=\"start\" matStartDate type=\"text\">\n              <input (dateInput)=\"updateValue($event.value, 'end')\" formControlName=\"end\" matEndDate type=\"text\">\n            </mat-date-range-input>\n            <mat-date-range-picker #picker2 ></mat-date-range-picker>\n\n            <button\n              (click)=\"picker2.open()\"\n              [disabled]=\"disabled\"\n              class=\"date-picker-icon\">\n              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n            </button>\n\n        </div>\n\n      </section>\n\n\n      <section class=\"to\">\n        <p>\n          To\n        </p>\n\n        {{ value.end | date : 'dd/MM/yyyy' }}\n\n      <mat-date-range-input\n        [min]=\"value.start\"\n         style=\"opacity: 0; display: none\" [rangePicker]=\"picker2\">\n        <input  matStartDate type=\"text\">\n        <input  (dateChange)=\"updateValue($event.value, 'end')\" [value]=\"value.end\" matEndDate type=\"text\">\n      </mat-date-range-input>\n      <mat-date-range-picker #picker2 ></mat-date-range-picker>\n\n\n      </section>\n\n    </div>\n  </section>\n\n\n</!->\n\n<section\n  *ngIf=\"formControl?.invalid\"\n  class=\"errors\">\n  <p *ngFor=\"let error of formControl.errors | keyvalue\">\n    {{ error.key }}\n  </p>\n</section>\n-->\n"
-        },
-        {
             "name": "LongFormComponent",
             "id": "component-LongFormComponent-5d24cced5d3e0774ff1da30eeb74856b47b3dea04315b37bf6e9d3fbd08a03f1b65dee0da4edbf63cbdf2d0d481bbccd54d779b980ef183b3faa37d787b72822",
             "file": "src/stories/playgrounds/long-form/long-form.component.ts",
@@ -2269,7 +1893,7 @@
         {
             "name": "NewDateRangeInputComponent",
             "id": "component-NewDateRangeInputComponent-0dc52b30c589a75e5326cc3f0c827e9226f7e15cbc5f2c8370fa81c302b36480083c81c26cf15a0eaf33c809783c1710519469fad47a8e4a5e6e9d03a00d4cd6",
-            "file": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+            "file": "src/app/components/date-range-input/new-date-range-input.component.ts",
             "encapsulation": [],
             "entryComponents": [],
             "inputs": [],
@@ -6330,7 +5954,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ".input {\r\n  border: none !important;\r\n}\r\n",
+                    "data": ".input {\r\n  border: none !important;\r\n  background: none !important;\r\n}\r\n",
                     "styleUrl": "./toggle-slide.component.scss"
                 }
             ],
@@ -6352,6 +5976,50 @@
         }
     ],
     "modules": [
+        {
+            "name": "AcuButtonModule",
+            "id": "module-AcuButtonModule-e3fe8b88c859c4e58734566fdb17f24a0a76eb1c087c2e40a5fdc42e2295e412d022510ad467db69fd75cdf40786adeb89ceed2ac03da18eefe8d8e100e69db2",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/components/acu-button/acu-button.module.ts",
+            "methods": [],
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { AcuButtonComponent } from './acu-button.component';\n\n@NgModule({\n  declarations: [\n    AcuButtonComponent\n  ],\n  imports: [\n    CommonModule,\n  ],\n  exports: [\n    AcuButtonComponent,\n  ]\n})\nexport class AcuButtonModule { }\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "AcuButtonComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "AcuButtonComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
         {
             "name": "AppModule",
             "id": "module-AppModule-b98fbdede64b50c58d0d4b1fa3f6c91afe9501164366d11aef1a1af463969f516fc04f88aaca6b0b367a41796bd8f05b2281ea52100d4ba6d4e7d1c95ac756e1",
@@ -6385,9 +6053,6 @@
                     "elements": [
                         {
                             "name": "DatePickerModule"
-                        },
-                        {
-                            "name": "DateRangeInputModule"
                         },
                         {
                             "name": "NumberInputModule"
@@ -6472,58 +6137,14 @@
             ]
         },
         {
-            "name": "DateRangeInputModule",
-            "id": "module-DateRangeInputModule-26f48432836a7bd7d863c24510c4ddca6bc47270ab92d8f0ab242f99c19426090f85b2218c993ae2ace5ec4f396d857cf9b5cd2c48fd42a6b731428ec104fba8",
-            "description": "",
-            "deprecationMessage": "",
-            "deprecated": false,
-            "file": "src/app/components/date-range-input/date-range-input.module.ts",
-            "methods": [],
-            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';\nimport { MAT_DATE_LOCALE } from '@angular/material/core';\nimport { MatDatepickerModule } from '@angular/material/datepicker';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { DateRangeInputComponent } from './date-range-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    DateRangeInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    MatDatepickerModule,\n    MatFormFieldModule,\n    MatMomentDateModule,\n  ],\n  exports: [\n    DateRangeInputComponent,\n  ],\n  providers: [\n    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},\n    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}\n  ]\n})\nexport class DateRangeInputModule { }\n",
-            "children": [
-                {
-                    "type": "providers",
-                    "elements": []
-                },
-                {
-                    "type": "declarations",
-                    "elements": [
-                        {
-                            "name": "DateRangeInputComponent"
-                        }
-                    ]
-                },
-                {
-                    "type": "imports",
-                    "elements": []
-                },
-                {
-                    "type": "exports",
-                    "elements": [
-                        {
-                            "name": "DateRangeInputComponent"
-                        }
-                    ]
-                },
-                {
-                    "type": "bootstrap",
-                    "elements": []
-                },
-                {
-                    "type": "classes",
-                    "elements": []
-                }
-            ]
-        },
-        {
             "name": "LongFormModule",
-            "id": "module-LongFormModule-304f8ed58e2313eb0a74e649957b663bc63c37b2bf2a21a668285e7c8c458789ce3a666439ea5750fdcf7cbd092e3ab23dea395a354643614a96b1745b17c233",
+            "id": "module-LongFormModule-8f27aee72ac398812afe55d87cd873017bf4ba4de8d341f9db12f908b028bbde1ef0493581d661d4f6d1f166a904e8e4e6c9c68c422c6252c4bfb751c185b5e4",
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
             "file": "src/stories/playgrounds/long-form/long-form.module.ts",
             "methods": [],
-            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { DatePickerModule } from 'src/app/components/date-picker/date-picker.module';\nimport { NewDateRangeInputModule } from 'src/app/components/new-date-range-input/new-date-range-input.module';\nimport { NumberInputModule } from 'src/app/components/number-input/number-input.module';\nimport { SelectInputModule } from 'src/app/components/select-input/select-input.module';\nimport { SliderInputModule } from 'src/app/components/slider-input/slider-input.module';\nimport { TextAreaModule } from 'src/app/components/text-area/text-area.module';\nimport { TextInputModule } from 'src/app/components/text-input/text-input.module';\nimport { ToggleSlideModule } from 'src/app/components/toggle-slide/toggle-slide.module';\nimport { LongFormComponent } from './long-form.component';\n\n\n\n@NgModule({\n  declarations: [\n    LongFormComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    TextInputModule,\n    TextAreaModule,\n    ToggleSlideModule,\n    SliderInputModule,\n    SelectInputModule,\n    NumberInputModule,\n    NewDateRangeInputModule,\n    DatePickerModule,\n  ],\n  exports: [\n    LongFormComponent,\n  ]\n})\nexport class LongFormModule { }\n",
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { DatePickerModule } from 'src/app/components/date-picker/date-picker.module';\nimport { NewDateRangeInputModule } from 'src/app/components/date-range-input/new-date-range-input.module';\nimport { NumberInputModule } from 'src/app/components/number-input/number-input.module';\nimport { SelectInputModule } from 'src/app/components/select-input/select-input.module';\nimport { SliderInputModule } from 'src/app/components/slider-input/slider-input.module';\nimport { TextAreaModule } from 'src/app/components/text-area/text-area.module';\nimport { TextInputModule } from 'src/app/components/text-input/text-input.module';\nimport { ToggleSlideModule } from 'src/app/components/toggle-slide/toggle-slide.module';\nimport { LongFormComponent } from './long-form.component';\n\n\n\n@NgModule({\n  declarations: [\n    LongFormComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    TextInputModule,\n    TextAreaModule,\n    ToggleSlideModule,\n    SliderInputModule,\n    SelectInputModule,\n    NumberInputModule,\n    NewDateRangeInputModule,\n    DatePickerModule,\n  ],\n  exports: [\n    LongFormComponent,\n  ]\n})\nexport class LongFormModule { }\n",
             "children": [
                 {
                     "type": "providers",
@@ -6590,7 +6211,7 @@
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
-            "file": "src/app/components/new-date-range-input/new-date-range-input.module.ts",
+            "file": "src/app/components/date-range-input/new-date-range-input.module.ts",
             "methods": [],
             "sourceCode": "import { CommonModule } from '@angular/common';\nimport { NgModule } from '@angular/core';\nimport { FormsModule, ReactiveFormsModule } from '@angular/forms';\nimport { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';\nimport { MAT_DATE_LOCALE } from '@angular/material/core';\nimport { MatDatepickerModule } from '@angular/material/datepicker';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { NewDateRangeInputComponent } from './new-date-range-input.component';\n\n\n\n@NgModule({\n  declarations: [\n    NewDateRangeInputComponent\n  ],\n  imports: [\n    CommonModule,\n    FormsModule,\n    ReactiveFormsModule,\n    MatDatepickerModule,\n    MatFormFieldModule,\n    MatMomentDateModule\n  ],\n  providers: [\n    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},\n    {provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: {useUtc: true}}\n  ],\n  exports: [\n    NewDateRangeInputComponent,\n  ]\n})\nexport class NewDateRangeInputModule { }\n",
             "children": [
@@ -6896,6 +6517,16 @@
     "miscellaneous": {
         "variables": [
             {
+                "name": "Accent",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/button.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
                 "name": "CheckBoxSelect",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
@@ -6929,7 +6560,7 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6940,6 +6571,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/number-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -6980,6 +6621,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/toggle-slide.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -7040,6 +6691,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/date-picker.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Disabled",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -7229,7 +6890,7 @@
                 "name": "fieldsToNotIncludeOptions",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -7244,6 +6905,16 @@
                 "deprecationMessage": "",
                 "type": "",
                 "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+            },
+            {
+                "name": "fieldsToNotIncludeOptions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/number-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
             },
             {
                 "name": "fieldsToNotIncludeOptions",
@@ -7280,6 +6951,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/text-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+            },
+            {
+                "name": "fieldsToNotIncludeOptions",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/toggle-slide.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -7384,6 +7065,16 @@
                 "deprecationMessage": "",
                 "type": "[]",
                 "defaultValue": "[]"
+            },
+            {
+                "name": "Link",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/button.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
             },
             {
                 "name": "Loading",
@@ -7500,6 +7191,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/number-input.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
+            },
+            {
+                "name": "Outline",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
@@ -7628,7 +7329,7 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "src/stories/number-input.stories.ts",
+                "file": "src/stories/button.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -7639,6 +7340,16 @@
                 "ctype": "miscellaneous",
                 "subtype": "variable",
                 "file": "src/stories/date-range.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "Template",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/number-input.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
@@ -7688,11 +7399,31 @@
                 "name": "Template",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
+                "file": "src/stories/toggle-slide.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "Story",
+                "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "Template",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
                 "file": "src/stories/playgrounds/long-form/long-form.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "Story",
                 "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+            },
+            {
+                "name": "Text",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/stories/button.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "",
+                "defaultValue": "Template.bind({})"
             },
             {
                 "name": "tooltipDisplay",
@@ -7739,6 +7470,88 @@
         "typealiases": [],
         "enumerations": [],
         "groupedVariables": {
+            "src/stories/button.stories.ts": [
+                {
+                    "name": "Accent",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Disabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "Link",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Outline",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                },
+                {
+                    "name": "Text",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/button.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                }
+            ],
             "src/stories/select-input.stories.ts": [
                 {
                     "name": "CheckBoxSelect",
@@ -8054,6 +7867,108 @@
                     "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
                 }
             ],
+            "src/stories/date-range.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "DisabledEnd",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "DisabledStart",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "form",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date()),\r\n})"
+                },
+                {
+                    "name": "formDisabledEnd",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
+                },
+                {
+                    "name": "noValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(),\r\n  end: new FormControl(),\r\n})"
+                },
+                {
+                    "name": "NoValue",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "startDisabled",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/date-range.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                }
+            ],
             "src/stories/number-input.stories.ts": [
                 {
                     "name": "Default",
@@ -8170,108 +8085,6 @@
                     "ctype": "miscellaneous",
                     "subtype": "variable",
                     "file": "src/stories/number-input.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "Story",
-                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
-                }
-            ],
-            "src/stories/date-range.stories.ts": [
-                {
-                    "name": "Default",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "DisabledEnd",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "DisabledStart",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "fieldsToNotIncludeOptions",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "[ 'random', 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
-                },
-                {
-                    "name": "form",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date()),\r\n})"
-                },
-                {
-                    "name": "formDisabledEnd",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
-                },
-                {
-                    "name": "noValue",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(),\r\n  end: new FormControl(),\r\n})"
-                },
-                {
-                    "name": "NoValue",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "Template.bind({})"
-                },
-                {
-                    "name": "startDisabled",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
-                    "deprecated": false,
-                    "deprecationMessage": "",
-                    "type": "",
-                    "defaultValue": "new FormGroup({\r\n  start: new FormControl(new Date()),\r\n  end: new FormControl(new Date(), ),\r\n})"
-                },
-                {
-                    "name": "Template",
-                    "ctype": "miscellaneous",
-                    "subtype": "variable",
-                    "file": "src/stories/date-range.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "Story",
@@ -8544,6 +8357,38 @@
                     "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
                 }
             ],
+            "src/stories/toggle-slide.stories.ts": [
+                {
+                    "name": "Default",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/toggle-slide.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "Template.bind({})"
+                },
+                {
+                    "name": "fieldsToNotIncludeOptions",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/toggle-slide.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "defaultValue": "[ 'formControl', 'prefix', 'suffix', 'properties', 'inputValue', 'customerFormControl', 'onTouched', 'onChange' ]\r\n  .reduce((a, b) => {\r\n    return {\r\n      ...a,\r\n      [b]: {\r\n        table: {\r\n          disable: true,\r\n        }\r\n      }\r\n    }\r\n  }, {})"
+                },
+                {
+                    "name": "Template",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/stories/toggle-slide.stories.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Story",
+                    "defaultValue": "( args ) => ({\r\n   props: args,\r\n})"
+                }
+            ],
             "src/stories/playgrounds/long-form/long-form.stories.ts": [
                 {
                     "name": "Default",
@@ -8629,6 +8474,15 @@
                 "status": "low"
             },
             {
+                "filePath": "src/app/components/acu-button/acu-button.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "AcuButtonComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/11",
+                "status": "low"
+            },
+            {
                 "filePath": "src/app/components/base/base-form-input.ts",
                 "type": "directive",
                 "linktype": "directive",
@@ -8647,16 +8501,7 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/components/date-range-input/date-range-input.component.ts",
-                "type": "component",
-                "linktype": "component",
-                "name": "DateRangeInputComponent",
-                "coveragePercent": 0,
-                "coverageCount": "0/30",
-                "status": "low"
-            },
-            {
-                "filePath": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+                "filePath": "src/app/components/date-range-input/new-date-range-input.component.ts",
                 "type": "component",
                 "linktype": "component",
                 "name": "NewDateRangeInputComponent",
@@ -8665,7 +8510,7 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+                "filePath": "src/app/components/date-range-input/new-date-range-input.component.ts",
                 "type": "injectable",
                 "linktype": "injectable",
                 "name": "FiveDayRangeSelectionStrategy",
@@ -8674,7 +8519,7 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/components/new-date-range-input/new-date-range-input.component.ts",
+                "filePath": "src/app/components/date-range-input/new-date-range-input.component.ts",
                 "type": "injectable",
                 "linktype": "injectable",
                 "name": "SelectedDateState",
@@ -8770,6 +8615,86 @@
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
                 "name": "environment",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Accent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Disabled",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "fieldsToNotIncludeOptions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Link",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Outline",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Template",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Text",
                 "coveragePercent": 0,
                 "coverageCount": "0/1",
                 "status": "low"
@@ -9575,6 +9500,36 @@
             },
             {
                 "filePath": "src/stories/text-input.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Template",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/toggle-slide.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "Default",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/toggle-slide.stories.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "fieldsToNotIncludeOptions",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/toggle-slide.stories.ts",
                 "type": "variable",
                 "linktype": "miscellaneous",
                 "linksubtype": "variable",
